@@ -1,0 +1,58 @@
+name: Sync TrendRadar Template
+
+on:
+  schedule:
+    - cron: "0 3 * * 1"   # 每周一凌晨3点（UTC）
+  workflow_dispatch:      # 支持手动触发
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. Checkout 仓库
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: 2. 配置 Git
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+
+      - name: 3. 添加 upstream
+        run: |
+          git remote add upstream https://github.com/sansan0/TrendRadar.git
+          git fetch upstream
+
+      - name: 4. 创建同步分支
+        run: |
+          git checkout -b auto-sync
+
+      - name: 5. 合并模板
+        run: |
+          git merge upstream/master --allow-unrelated-histories || true
+
+      - name: 6. 使用模板代码（核心）
+        run: |
+          git checkout --theirs . || true
+
+      - name: 7. 恢复你的配置（核心保护）
+        run: |
+          git checkout --ours config/ 2>/dev/null || true
+          git checkout --ours .env 2>/dev/null || true
+          git checkout --ours .env.local 2>/dev/null || true
+
+      - name: 8. 提交更改
+        run: |
+          git add .
+          git commit -m "auto sync: update from TrendRadar template" || echo "No changes"
+
+      - name: 9. 合并回 master
+        run: |
+          git checkout master
+          git merge auto-sync || true
+
+      - name: 10. 推送到 GitHub
+        run: |
+          git push origin master
