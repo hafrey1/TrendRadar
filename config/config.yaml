@@ -441,10 +441,19 @@ ai:
   max_tokens: 5000                  # 最大生成 token 数
                                     # 注意：如果 API 不支持此参数(报 HTTP 400)，请设为 0 以禁用发送
   # 高级选项
-  num_retries: 1                    # 失败重试次数
-  fallback_models: []               # 备用模型列表（可选）
-                                    # 示例: ["openai/gpt-4o-mini", "openai/deepseek-ai/DeepSeek-V3"]
+  num_retries: 2                    # 失败重试次数              # 备用模型列表（可                                 # 示例: ["openai/gpt-4o-mini", "openai/deepseek-ai/DeepSeek-V3"]
+                                    # ✅ 关键：fallback 模型（OpenRouter）
+  fallback_models:
+    - "openai/qwen/qwen3-14b:free"
 
+  # ✅ OpenRouter 专用参数（LiteLLM 会自动识别）
+  extra_headers:
+    openai:
+      Authorization: "Bearer ${OPENROUTER_API_KEY}"
+
+  extra_body:
+    openai:
+      base_url: "https://openrouter.ai/api/v1"
   # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   # 额外参数 (高级选项，一般无需修改)
   # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
