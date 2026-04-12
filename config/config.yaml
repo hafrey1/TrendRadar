@@ -151,7 +151,7 @@ rss:
 # - incremental：最少打扰，只看新增
 # ===============================================================
 report:
-  mode: "incremental"                     # daily | current | incremental（schedule 开启时作为默认值）
+  mode: "current"                     # daily | current | incremental（schedule 开启时作为默认值）
 
   display_mode: "keyword"             # 分组维度: keyword | platform
                                       # keyword: 按关键词分组显示（默认）
@@ -202,9 +202,9 @@ filter:
 # - 模型配置统一在下方 ai 段
 # ===============================================================
 ai_filter:
-  batch_size: 50                         # 每批发送给 AI 的标题数（控制单次 API 调用量）
+  batch_size: 200                         # 每批发送给 AI 的标题数（控制单次 API 调用量）
                                           # 新闻超过此数量时自动分批处理
-  batch_interval: 5                       # 分批处理时，每批之间的等待时间（秒）
+  batch_interval: 2                       # 分批处理时，每批之间的等待时间（秒）
                                           # 避免频繁调用 API 触发限流，设为 0 则不等待
 
   min_score: 0.7                          # 推送最低分数阈值（0.0 ~ 1.0）
@@ -219,7 +219,7 @@ ai_filter:
   # 全量重分类触发阈值（0~1）
   # change_ratio >= 此值：全量重分类；否则增量更新
   # 0.0 最准确最费；1.0 最省但可能陈旧；0.6 是平衡点
-  reclassify_threshold: 0.8
+  reclassify_threshold: 0.6
 
   # 以下提示词模板一般无需修改（不建议动）
 
@@ -415,7 +415,7 @@ ai:
   # 完整列表: https://docs.litellm.ai/docs/providers
   # 如果你对于看英文文档比较头疼，那么可以点击页面右下角的 【Ask AI】 ,用中文询问怎么配置 
   
-  model: "gemini/gemini-2.5-flash"
+  model: "deepseek/deepseek-chat"
 
   api_key: ""                       # API Key（建议使用环境变量 AI_API_KEY）
   
@@ -441,19 +441,10 @@ ai:
   max_tokens: 5000                  # 最大生成 token 数
                                     # 注意：如果 API 不支持此参数(报 HTTP 400)，请设为 0 以禁用发送
   # 高级选项
-  num_retries: 2                    # 失败重试次数              # 备用模型列表（可                                 
-                                    # ✅ 关键：fallback 模型（OpenRouter）
-  fallback_models:
-    ["openai/qwen/qwen3-14b:free"]   # 示例: ["openai/gpt-4o-mini", "openai/deepseek-ai/DeepSeek-V3"]
+  num_retries: 1                    # 失败重试次数
+  fallback_models: []               # 备用模型列表（可选）
+                                    # 示例: ["openai/gpt-4o-mini", "openai/deepseek-ai/DeepSeek-V3"]
 
-  # ✅ OpenRouter 专用参数（LiteLLM 会自动识别）
-  extra_headers:
-    openai:
-      Authorization: "Bearer ${OPENROUTER_API_KEY}"
-
-  extra_body:
-    openai:
-      base_url: "https://openrouter.ai/api/v1"
   # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   # 额外参数 (高级选项，一般无需修改)
   # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -485,7 +476,7 @@ ai_analysis:
   # 分析报告输出语言
   # 格式：自然语言描述
   # 示例: "English", "Korean", "法语"
-  language: "中文"
+  language: "Chinese"
 
   # 提示词配置文件路径（相对于 config 目录）
   prompt_file: "ai_analysis_prompt.txt"
@@ -504,7 +495,7 @@ ai_analysis:
   mode: "follow_report"
 
   # 分析内容配置
-  max_news_for_analysis: 100        # 热榜+RSS 合计参与分析的新闻数量上限（控制成本关键项）
+  max_news_for_analysis: 150        # 热榜+RSS 合计参与分析的新闻数量上限（控制成本关键项）
                                     # 热榜优先占用配额，RSS 使用剩余配额；独立展示区不受此限制
                                     # 推送消息顶部会显示实际的 AI 分析数供参考
 
@@ -518,10 +509,10 @@ ai_analysis:
 
   include_rss: false                # 是否包含 RSS 内容进行分析
   
-  include_standalone: false          # 是否将独立展示区数据纳入 AI 分析
+  include_standalone: true          # 是否将独立展示区数据纳入 AI 分析
                                     # 数据源列表来自 display.standalone.platforms / display.standalone.rss_feeds
 
-  include_rank_timeline: false       # 是否传递完整排名时间线
+  include_rank_timeline: true       # 是否传递完整排名时间线
                                     # false: 使用简化格式（排名范围+时间范围+出现次数）
                                     # true: 传递完整排名变化轨迹（如 1(09:30)→2(10:00)→0(11:00)）
                                     # 启用后 AI 能更精确分析热度趋势，但会额外增加 token 消耗（0.5 倍到 1 倍）

@@ -4674,7 +4674,8 @@ function findChildKey(lines, start, end, parentIndent, key) {
         const indent = line.search(/\S/);
         if (indent <= parentIndent) break;
         const m = line.match(/^\s*(\S+):\s*/);
-        if (m && m[1] === key && indent === parentIndent + 2) {
+        const rawKey = m ? m[1].replace(/^["']|["']$/g, '') : null;
+        if (m && rawKey === key && indent === parentIndent + 2) {
             return i;
         }
     }
