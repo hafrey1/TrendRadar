@@ -415,7 +415,7 @@ ai:
   # 完整列表: https://docs.litellm.ai/docs/providers
   # 如果你对于看英文文档比较头疼，那么可以点击页面右下角的 【Ask AI】 ,用中文询问怎么配置 
   
-  model: "deepseek/deepseek-chat"
+  model: "gemini/gemini-2.5-flash"
 
   api_key: ""                       # API Key（建议使用环境变量 AI_API_KEY）
   
@@ -442,7 +442,7 @@ ai:
                                     # 注意：如果 API 不支持此参数(报 HTTP 400)，请设为 0 以禁用发送
   # 高级选项
   num_retries: 2                    # 失败重试次数
-  fallback_models: []               # 备用模型列表（可选）
+  fallback_models: ["openai/qwen/qwen3-14b:free"]               # 备用模型列表（可选）
                                     # 示例: ["openai/gpt-4o-mini", "openai/deepseek-ai/DeepSeek-V3"]
 
   # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
