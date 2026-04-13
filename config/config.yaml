@@ -441,7 +441,7 @@ ai:
   max_tokens: 5000                  # 最大生成 token 数
                                     # 注意：如果 API 不支持此参数(报 HTTP 400)，请设为 0 以禁用发送
   # 高级选项
-  num_retries: 1                    # 失败重试次数
+  num_retries: 2                    # 失败重试次数
   fallback_models: []               # 备用模型列表（可选）
                                     # 示例: ["openai/gpt-4o-mini", "openai/deepseek-ai/DeepSeek-V3"]
 
@@ -495,7 +495,7 @@ ai_analysis:
   mode: "follow_report"
 
   # 分析内容配置
-  max_news_for_analysis: 150        # 热榜+RSS 合计参与分析的新闻数量上限（控制成本关键项）
+  max_news_for_analysis: 100        # 热榜+RSS 合计参与分析的新闻数量上限（控制成本关键项）
                                     # 热榜优先占用配额，RSS 使用剩余配额；独立展示区不受此限制
                                     # 推送消息顶部会显示实际的 AI 分析数供参考
 
