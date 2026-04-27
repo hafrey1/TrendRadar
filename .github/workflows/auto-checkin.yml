@@ -25,7 +25,7 @@ jobs:
               owner,
               repo,
               workflow_id,
-              ref: "main"
+              ref: "master"
             });
 
             console.log("✅ Auto Check-In Success");
