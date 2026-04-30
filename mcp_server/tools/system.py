@@ -88,7 +88,7 @@ class SystemManagementTools:
                 "热榜平台已禁用",
                 suggestion="请检查 config/config.yaml 中的 platforms.enabled 配置"
             )
-        all_platforms = platforms_config.get("sources", [])
+        all_platforms = [p for p in platforms_config.get("sources", []) if p.get("enabled", True)]
         if not all_platforms:
             raise CrawlTaskError(
                 "配置文件中没有平台配置",
