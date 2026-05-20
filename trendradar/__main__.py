@@ -655,9 +655,9 @@ class NewsAnalyzer:
 
         纯数据准备方法，不检查 display.regions.standalone 开关。
         各消费者自行决定是否使用：
-        - AI 分析：由 ai.include_standalone 控制
-        - 通知推送：由 display.regions.standalone 控制（在 dispatcher 层门控）
-        - HTML 报告：始终包含（如果有数据）
+        - AI 分析：由 ai.include_standalone 控制（在 _run_ai_analysis 层门控）
+        - HTML 报告 / 邮件：由 display.regions.standalone 控制（在 HTML 生成前过滤）
+        - Webhook 推送：由 display.regions.standalone 控制（在 dispatcher 层门控）
 
         Args:
             results: 原始爬取结果 {platform_id: {title: title_data}}
@@ -887,6 +887,9 @@ class NewsAnalyzer:
         # HTML生成（如果启用）— 使用翻译后的数据
         html_file = None
         if self.ctx.config["STORAGE"]["FORMATS"]["HTML"]:
+            display_regions = self.ctx.config.get("DISPLAY", {}).get("REGIONS", {})
+            html_standalone = standalone_data if display_regions.get("STANDALONE", False) else None
+            html_ai = ai_result if display_regions.get("AI_ANALYSIS", True) else None
             html_file = self.ctx.generate_html(
                 stats,
                 total_titles,
@@ -897,8 +900,8 @@ class NewsAnalyzer:
                 update_info=self.update_info if self.ctx.config["SHOW_VERSION_UPDATE"] else None,
                 rss_items=rss_items,
                 rss_new_items=rss_new_items,
-                ai_analysis=ai_result,
-                standalone_data=standalone_data,
+                ai_analysis=html_ai,
+                standalone_data=html_standalone,
                 frequency_file=self.frequency_file,
             )
 
