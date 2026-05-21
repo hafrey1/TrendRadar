@@ -28,6 +28,7 @@ from trendradar.storage import convert_crawl_results_to_news_data
 from trendradar.utils.time import DEFAULT_TIMEZONE, is_within_days, calculate_days_old
 from trendradar.ai import AIAnalyzer, AIAnalysisResult
 from trendradar.core.scheduler import ResolvedSchedule
+from trendradar.core.cdn import fetch_with_fallback
 
 
 def _parse_version(version_str: str) -> Tuple[int, int, int]:
@@ -55,24 +56,8 @@ def _compare_version(local: str, remote: str) -> str:
 
 
 def _fetch_remote_version(version_url: str, proxy_url: Optional[str] = None) -> Optional[str]:
-    """获取远程版本号"""
-    try:
-        proxies = None
-        if proxy_url:
-            proxies = {"http": proxy_url, "https": proxy_url}
-
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-            "Accept": "text/plain, */*",
-            "Cache-Control": "no-cache",
-        }
-
-        response = requests.get(version_url, proxies=proxies, headers=headers, timeout=10)
-        response.raise_for_status()
-        return response.text.strip()
-    except Exception as e:
-        print(f"[版本检查] 获取远程版本失败: {e}")
-        return None
+    """获取远程版本号（支持 CDN 多源回退）"""
+    return fetch_with_fallback(version_url, proxy_url)
 
 
 def _parse_config_versions(content: str) -> Dict[str, str]:
