@@ -13,7 +13,6 @@ from .formatter import (
     render_ai_analysis_markdown,
     render_ai_analysis_feishu,
     render_ai_analysis_dingtalk,
-    render_ai_analysis_html,
     render_ai_analysis_html_rich,
     render_ai_analysis_plain,
 )
@@ -34,7 +33,6 @@ __all__ = [
     "render_ai_analysis_markdown",
     "render_ai_analysis_feishu",
     "render_ai_analysis_dingtalk",
-    "render_ai_analysis_html",
     "render_ai_analysis_html_rich",
     "render_ai_analysis_plain",
 ]

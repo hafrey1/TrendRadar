@@ -196,94 +196,6 @@ def render_ai_analysis_dingtalk(result: AIAnalysisResult) -> str:
     return "\n".join(lines)
 
 
-def render_ai_analysis_html(result: AIAnalysisResult) -> str:
-    """渲染为 HTML 格式（邮件）"""
-    if not result.success:
-        if result.skipped:
-            return f'<div class="ai-info">ℹ️ {_escape_html(result.error)}</div>'
-        return (
-            f'<div class="ai-error">⚠️ AI 分析失败: {_escape_html(result.error)}</div>'
-        )
-
-    html_parts = ['<div class="ai-analysis">', "<h3>✨ AI 热点分析</h3>"]
-
-    if result.core_trends:
-        content = _format_list_content(result.core_trends)
-        content_html = _escape_html(content).replace("\n", "<br>")
-        html_parts.extend(
-            [
-                '<div class="ai-section">',
-                "<h4>核心热点态势</h4>",
-                f'<div class="ai-content">{content_html}</div>',
-                "</div>",
-            ]
-        )
-
-    if result.sentiment_controversy:
-        content = _format_list_content(result.sentiment_controversy)
-        content_html = _escape_html(content).replace("\n", "<br>")
-        html_parts.extend(
-            [
-                '<div class="ai-section">',
-                "<h4>舆论风向争议</h4>",
-                f'<div class="ai-content">{content_html}</div>',
-                "</div>",
-            ]
-        )
-
-    if result.signals:
-        content = _format_list_content(result.signals)
-        content_html = _escape_html(content).replace("\n", "<br>")
-        html_parts.extend(
-            [
-                '<div class="ai-section">',
-                "<h4>异动与弱信号</h4>",
-                f'<div class="ai-content">{content_html}</div>',
-                "</div>",
-            ]
-        )
-
-    if result.rss_insights:
-        content = _format_list_content(result.rss_insights)
-        content_html = _escape_html(content).replace("\n", "<br>")
-        html_parts.extend(
-            [
-                '<div class="ai-section">',
-                "<h4>RSS 深度洞察</h4>",
-                f'<div class="ai-content">{content_html}</div>',
-                "</div>",
-            ]
-        )
-
-    if result.outlook_strategy:
-        content = _format_list_content(result.outlook_strategy)
-        content_html = _escape_html(content).replace("\n", "<br>")
-        html_parts.extend(
-            [
-                '<div class="ai-section ai-conclusion">',
-                "<h4>研判策略建议</h4>",
-                f'<div class="ai-content">{content_html}</div>',
-                "</div>",
-            ]
-        )
-
-    if result.standalone_summaries:
-        summaries_text = _format_standalone_summaries(result.standalone_summaries)
-        if summaries_text:
-            summaries_html = _escape_html(summaries_text).replace("\n", "<br>")
-            html_parts.extend(
-                [
-                    '<div class="ai-section">',
-                    "<h4>独立源点速览</h4>",
-                    f'<div class="ai-content">{summaries_html}</div>',
-                    "</div>",
-                ]
-            )
-
-    html_parts.append("</div>")
-    return "\n".join(html_parts)
-
-
 def render_ai_analysis_plain(result: AIAnalysisResult) -> str:
     """渲染为纯文本格式"""
     if not result.success:
@@ -385,7 +297,7 @@ def render_ai_analysis_html_rich(result: AIAnalysisResult) -> str:
         error_msg = result.error or "未知错误"
         return f"""
                 <div class="ai-section">
-                    <div class="ai-error">⚠️ AI 分析失败: {_escape_html(str(error_msg))}</div>
+                    <div class="ai-warning">AI 分析失败: {_escape_html(str(error_msg))}</div>
                 </div>"""
 
     ai_html = """

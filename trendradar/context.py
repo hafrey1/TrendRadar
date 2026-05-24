@@ -320,6 +320,7 @@ class AppContext:
         ai_analysis: Optional[Any] = None,
         standalone_data: Optional[Dict] = None,
         frequency_file: Optional[str] = None,
+        report_metadata: Optional[Dict] = None,
     ) -> str:
         """生成HTML报告"""
         return generate_html_report(
@@ -337,6 +338,7 @@ class AppContext:
             render_html_func=lambda *args, **kwargs: self.render_html(*args, rss_items=rss_items, rss_new_items=rss_new_items, ai_analysis=ai_analysis, standalone_data=standalone_data, **kwargs),
             matches_word_groups_func=self.matches_word_groups,
             load_frequency_words_func=lambda: self.load_frequency_words(frequency_file),
+            report_metadata=report_metadata,
         )
 
     def render_html(
