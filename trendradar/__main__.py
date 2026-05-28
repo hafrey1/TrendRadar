@@ -1375,6 +1375,13 @@ class NewsAnalyzer:
                     quiet=True,
                 )
 
+        # 首次抓取时全部条目都是新增，清除新增统计以避免与主区域完全重复
+        if rss_new_stats and rss_stats:
+            main_count = sum(len(s.get("titles", [])) for s in rss_stats)
+            new_count = sum(len(s.get("titles", [])) for s in rss_new_stats)
+            if new_count > 0 and new_count >= main_count:
+                rss_new_stats = None
+
         self._rss_total_count = total
         return rss_stats, rss_new_stats, raw_rss_items, rss_new_urls
 

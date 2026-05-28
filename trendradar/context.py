@@ -301,8 +301,6 @@ class AppContext:
             id_to_name=id_to_name,
             mode=mode,
             rank_threshold=self.rank_threshold,
-            matches_word_groups_func=self.matches_word_groups,
-            load_frequency_words_func=lambda: self.load_frequency_words(frequency_file),
             show_new_section=self.show_new_section,
         )
 
@@ -336,8 +334,6 @@ class AppContext:
             date_folder=self.format_date(),
             time_filename=self.format_time(),
             render_html_func=lambda *args, **kwargs: self.render_html(*args, rss_items=rss_items, rss_new_items=rss_new_items, ai_analysis=ai_analysis, standalone_data=standalone_data, **kwargs),
-            matches_word_groups_func=self.matches_word_groups,
-            load_frequency_words_func=lambda: self.load_frequency_words(frequency_file),
             report_metadata=report_metadata,
         )
 

@@ -1075,11 +1075,11 @@ class SQLiteStorageMixin:
                         if item.url:
                             historical_urls[feed_id].add(item.url)
 
-            # 检查是否有历史数据
+            # 检查是否有早于当前批次的历史数据
             has_historical_data = any(len(urls) > 0 for urls in historical_urls.values())
             if not has_historical_data:
-                # 第一次抓取，没有"新增"概念
-                return {}
+                # 当天第一次抓取，所有条目都是新增
+                return current_data.items.copy()
 
             # 检测新增
             new_items: Dict[str, List[RSSItem]] = {}

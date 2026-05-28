@@ -18,8 +18,6 @@ def prepare_report_data(
     id_to_name: Optional[Dict] = None,
     mode: str = "daily",
     rank_threshold: int = 3,
-    matches_word_groups_func: Optional[Callable] = None,
-    load_frequency_words_func: Optional[Callable] = None,
     show_new_section: bool = True,
 ) -> Dict:
     """
@@ -32,8 +30,6 @@ def prepare_report_data(
         id_to_name: ID 到名称的映射
         mode: 报告模式 (daily/incremental/current)
         rank_threshold: 排名阈值
-        matches_word_groups_func: 词组匹配函数
-        load_frequency_words_func: 加载频率词函数
         show_new_section: 是否显示新增热点区域
 
     Returns:
@@ -41,28 +37,33 @@ def prepare_report_data(
     """
     processed_new_titles = []
 
-    # 始终过滤新增标题用于计数（头部统计需要），但区域展示受配置控制
+    stats_title_set = {
+        t["title"]
+        for stat in stats
+        for t in stat.get("titles", [])
+    }
+
+    # 过滤新增标题：只保留在 stats 中存活的标题（即通过了 AI/关键词过滤的标题）
     filtered_new_titles = {}
     if new_titles and id_to_name:
-        if matches_word_groups_func and load_frequency_words_func:
-            word_groups, filter_words, global_filters = load_frequency_words_func()
-            for source_id, titles_data in new_titles.items():
-                filtered_titles = {}
-                for title, title_data in titles_data.items():
-                    if matches_word_groups_func(title, word_groups, filter_words, global_filters):
-                        filtered_titles[title] = title_data
-                if filtered_titles:
-                    filtered_new_titles[source_id] = filtered_titles
-        else:
-            filtered_new_titles = new_titles
+        for source_id, titles_data in new_titles.items():
+            filtered_titles = {}
+            for title, title_data in titles_data.items():
+                if title in stats_title_set:
+                    filtered_titles[title] = title_data
+            if filtered_titles:
+                filtered_new_titles[source_id] = filtered_titles
 
         original_new_count = sum(len(titles) for titles in new_titles.values()) if new_titles else 0
         filtered_new_count = sum(len(titles) for titles in filtered_new_titles.values()) if filtered_new_titles else 0
         if original_new_count > 0:
-            print(f"频率词过滤后：{filtered_new_count} 条新增热点匹配（原始 {original_new_count} 条）")
+            print(f"新增热点过滤后：{filtered_new_count} 条保留（原始 {original_new_count} 条）")
 
     # 在增量模式下或配置关闭时隐藏新增新闻区域（但计数已完成）
-    hide_new_section = mode == "incremental" or not show_new_section
+    # 当全部热榜条目都是新增时（首次运行），也隐藏以避免与主区域完全重复
+    all_new_titles = {title for titles in filtered_new_titles.values() for title in titles}
+    all_are_new = bool(all_new_titles) and all_new_titles == stats_title_set
+    hide_new_section = mode == "incremental" or not show_new_section or all_are_new
 
     if not hide_new_section and filtered_new_titles and id_to_name:
         for source_id, titles_data in filtered_new_titles.items():
@@ -151,8 +152,6 @@ def generate_html_report(
     date_folder: str = "",
     time_filename: str = "",
     render_html_func: Optional[Callable] = None,
-    matches_word_groups_func: Optional[Callable] = None,
-    load_frequency_words_func: Optional[Callable] = None,
     report_metadata: Optional[Dict] = None,
 ) -> str:
     """
@@ -176,8 +175,6 @@ def generate_html_report(
         date_folder: 日期文件夹名称
         time_filename: 时间文件名
         render_html_func: HTML 渲染函数
-        matches_word_groups_func: 词组匹配函数
-        load_frequency_words_func: 加载频率词函数
 
     Returns:
         str: 生成的 HTML 文件路径（时间戳快照路径）
@@ -198,8 +195,6 @@ def generate_html_report(
         id_to_name,
         mode,
         rank_threshold,
-        matches_word_groups_func,
-        load_frequency_words_func,
     )
 
     if report_metadata:
