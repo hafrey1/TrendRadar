@@ -222,7 +222,10 @@ class NewsAnalyzer:
         self.update_info = None
         self.proxy_url = None
         self._setup_proxy()
-        self.data_fetcher = DataFetcher(self.proxy_url)
+        self.data_fetcher = DataFetcher(
+            self.proxy_url,
+            api_url=self.ctx.config.get("PLATFORMS_API_URL") or None,
+        )
 
         # RSS/平台元数据（用于报告头部展示）
         self._rss_source_total = 0
@@ -1069,11 +1072,15 @@ class NewsAnalyzer:
     def _crawl_data(self) -> Tuple[Dict, Dict, List]:
         """执行数据爬取"""
         ids = []
+        domain_rules = {}
         for platform in self.ctx.platforms:
             if "name" in platform:
                 ids.append((platform["id"], platform["name"]))
             else:
                 ids.append(platform["id"])
+            expected_domain = platform.get("expected_domain", "")
+            if expected_domain:
+                domain_rules[platform["id"]] = expected_domain
 
         print(
             f"配置的监控平台: {[p.get('name', p['id']) for p in self.ctx.platforms]}"
@@ -1082,7 +1089,7 @@ class NewsAnalyzer:
         Path("output").mkdir(parents=True, exist_ok=True)
 
         results, id_to_name, failed_ids = self.data_fetcher.crawl_websites(
-            ids, self.request_interval
+            ids, self.request_interval, domain_rules=domain_rules
         )
 
         # 转换为 NewsData 格式并保存到存储后端

@@ -2908,7 +2908,7 @@ def render_html_content(
 
                     var line = idx + '. ';
                     if (url) {
-                        line += '[' + titleText.replace(/[[\]]/g, '') + '](' + url + ')';
+                        line += '[' + titleText.replace(/[[\\]]/g, '') + '](' + url + ')';
                     } else {
                         line += titleText;
                     }

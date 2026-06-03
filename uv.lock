@@ -1996,7 +1996,7 @@ wheels = [
 
 [[package]]
 name = "trendradar"
-version = "6.8.1"
+version = "6.9.0"
 source = { editable = "." }
 dependencies = [
     { name = "boto3" },

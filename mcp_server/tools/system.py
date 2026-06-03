@@ -4,6 +4,7 @@
 实现系统状态查询和爬虫触发功能。
 """
 
+import os
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -227,12 +228,24 @@ class SystemManagementTools:
             # 2. 执行爬取
             advanced = config_data.get("advanced", {})
             crawler_config = advanced.get("crawler", {})
+            platforms_config = config_data.get("platforms", {})
             proxy_url = crawler_config.get("default_proxy") if crawler_config.get("use_proxy") else None
+            api_url = (
+                os.environ.get("PLATFORMS_API_URL", "").strip()
+                or platforms_config.get("api_url", "")
+            ) or None
 
-            fetcher = DataFetcher(proxy_url=proxy_url)
+            domain_rules = {}
+            for p in target_platforms:
+                ed = p.get("expected_domain", "")
+                if ed:
+                    domain_rules[p["id"]] = ed
+
+            fetcher = DataFetcher(proxy_url=proxy_url, api_url=api_url)
             results, id_to_name, failed_ids = fetcher.crawl_websites(
                 ids_list=ids,
-                request_interval=crawler_config.get("request_interval", 100)
+                request_interval=crawler_config.get("request_interval", 100),
+                domain_rules=domain_rules,
             )
 
             # 3. 转换与持久化
