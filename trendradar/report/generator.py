@@ -153,6 +153,7 @@ def generate_html_report(
     time_filename: str = "",
     render_html_func: Optional[Callable] = None,
     report_metadata: Optional[Dict] = None,
+    translate_report_func: Optional[Callable] = None,
 ) -> str:
     """
     生成 HTML 报告
@@ -196,6 +197,11 @@ def generate_html_report(
         mode,
         rank_threshold,
     )
+
+    # 翻译热榜 report_data（stats/new_titles）——在 prepare_report_data 过滤之后翻译，
+    # 不影响新增热点区的 title 匹配过滤，使 HTML 网页版热榜也展示译文
+    if translate_report_func:
+        report_data = translate_report_func(report_data)
 
     if report_metadata:
         _METADATA_KEYS = {

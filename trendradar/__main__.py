@@ -535,14 +535,22 @@ class NewsAnalyzer:
             else:
                 ai_report_type = report_type
 
+            # 独立 AI 模式（ai_mode != 推送 mode）下，rss_items/standalone_data 仍是推送 mode 的数据，
+            # 与 ai_mode 的热榜 ai_stats 不同源。为避免时间窗错配的数据误导分析，独立模式下不向 AI
+            # 传入 RSS/独立展示区，使其专注于 ai_mode 的热榜分析（同 mode 时正常传入）。
+            ai_rss_stats = rss_items if ai_mode == mode else None
+            ai_standalone = standalone_data if ai_mode == mode else None
+            if ai_mode != mode and (rss_items or standalone_data):
+                print(f"[AI] 独立分析模式（{ai_mode}）：RSS/独立展示区与推送模式（{mode}）不同源，本次分析仅聚焦热榜")
+
             result = analyzer.analyze(
                 stats=ai_stats,
-                rss_stats=rss_items,
+                rss_stats=ai_rss_stats,
                 report_mode=ai_mode,
                 report_type=ai_report_type,
                 platforms=platforms,
                 keywords=keywords,
-                standalone_data=standalone_data,
+                standalone_data=ai_standalone,
             )
 
             # 设置 AI 分析使用的模式
@@ -805,7 +813,7 @@ class NewsAnalyzer:
         standalone_data: Optional[Dict] = None,
         schedule: ResolvedSchedule = None,
         rss_new_urls: Optional[set] = None,
-    ) -> Tuple[List[Dict], Optional[str], Optional[AIAnalysisResult], Optional[List[Dict]]]:
+    ) -> Tuple[List[Dict], Optional[str], Optional[AIAnalysisResult], Optional[List[Dict]], Optional[Dict], Optional[List[Dict]]]:
         """统一的分析流水线：数据处理 → 统计计算（关键词/AI筛选）→ AI分析 → HTML生成"""
 
         # 根据筛选策略选择数据处理方式
@@ -817,15 +825,16 @@ class NewsAnalyzer:
             if ai_filter_result and ai_filter_result.success:
                 print(f"[筛选] AI 筛选完成: {ai_filter_result.total_matched} 条匹配, {len(ai_filter_result.tags)} 个标签")
                 # 转换为与关键词匹配相同的数据结构
-                stats, ai_rss_stats = self.ctx.convert_ai_filter_to_report_data(
+                stats, ai_rss_stats, ai_rss_new_stats = self.ctx.convert_ai_filter_to_report_data(
                     ai_filter_result, mode=mode,
                     new_titles=new_titles, rss_new_urls=rss_new_urls,
                 )
                 total_titles = sum(len(titles) for titles in data_source.values())
 
-                # AI 筛选的 RSS 结果替换关键词匹配的 RSS 结果
-                if ai_rss_stats:
-                    rss_items = ai_rss_stats
+                # AI 筛选成功：无条件用 AI 结果替换 RSS 主区与新增区（与热榜 stats 一致，
+                # 不因 AI 命中为空而回退到关键词结果）
+                rss_items = ai_rss_stats
+                rss_new_items = ai_rss_new_stats
             else:
                 # AI 筛选失败，回退到关键词匹配
                 error_msg = ai_filter_result.error if ai_filter_result else "未知错误"
@@ -866,20 +875,31 @@ class NewsAnalyzer:
                 standalone_data=standalone_data
             )
 
-        # 翻译 RSS 内容（如果启用）— 在 HTML 生成前执行，确保网页版也能展示翻译内容
-        # 注意：仅翻译 rss_items 和 rss_new_items，不翻译 standalone_data（通知前会重新生成）
+        # 翻译 RSS 和独立展示区内容（如果启用）— 在 HTML 生成前执行，确保网页版也能展示翻译内容
+        # standalone_data 在此翻译一次后贯穿到推送阶段复用，避免重复翻译并保证网页与推送译文一致
         # 热榜翻译在推送时由 dispatch_all 处理 report_data
         trans_config = self.ctx.config.get("AI_TRANSLATION", {})
+        translate_report_func = None  # 供 HTML 翻译热榜 report_data（在过滤之后翻译）
         if trans_config.get("ENABLED", False):
             dispatcher = self.ctx.create_notification_dispatcher()
             display_regions = self.ctx.config.get("DISPLAY", {}).get("REGIONS", {})
-            _, rss_items, rss_new_items, _ = \
+            _, rss_items, rss_new_items, standalone_data = \
                 dispatcher.translate_content(
                     report_data={"stats": [], "new_titles": []},
                     rss_items=rss_items,
                     rss_new_items=rss_new_items,
+                    standalone_data=standalone_data,
                     display_regions=display_regions,
                 )
+
+            # 热榜 report_data 翻译回调：HTML 在 prepare_report_data 过滤之后调用，
+            # 仅翻译热榜（skip_rss/skip_standalone 跳过已在上游翻译的 RSS/独立区），网页版热榜展示译文
+            def translate_report_func(rd, _d=dispatcher, _r=display_regions):
+                translated_rd, _, _, _ = _d.translate_content(
+                    report_data=rd, display_regions=_r,
+                    skip_rss=True, skip_standalone=True,
+                )
+                return translated_rd
 
         # 计算 RSS 匹配条数（供 HTML 和推送共用）
         self._rss_matched_count = sum(stat.get("count", 0) for stat in rss_items) if rss_items else 0
@@ -911,9 +931,10 @@ class NewsAnalyzer:
                     "rss_source_total": self._rss_source_total,
                     "rss_source_failed": self._rss_source_failed,
                 },
+                translate_report_func=translate_report_func,
             )
 
-        return stats, html_file, ai_result, rss_items
+        return stats, html_file, ai_result, rss_items, standalone_data, rss_new_items
 
     def _send_notification_if_needed(
         self,
@@ -978,7 +999,8 @@ class NewsAnalyzer:
                 if ai_config.get("ENABLED", False):
                     ai_result = self._run_ai_analysis(
                         stats, rss_items, mode, report_type, id_to_name,
-                        current_results=current_results, schedule=schedule
+                        current_results=current_results, schedule=schedule,
+                        standalone_data=standalone_data,
                     )
 
             # 准备报告数据
@@ -1382,13 +1404,6 @@ class NewsAnalyzer:
                     quiet=True,
                 )
 
-        # 首次抓取时全部条目都是新增，清除新增统计以避免与主区域完全重复
-        if rss_new_stats and rss_stats:
-            main_count = sum(len(s.get("titles", [])) for s in rss_stats)
-            new_count = sum(len(s.get("titles", [])) for s in rss_new_stats)
-            if new_count > 0 and new_count >= main_count:
-                rss_new_stats = None
-
         self._rss_total_count = total
         return rss_stats, rss_new_stats, raw_rss_items, rss_new_urls
 
@@ -1568,6 +1583,7 @@ class NewsAnalyzer:
         stats = []
         ai_result = None
         title_info = None
+        standalone_data = None
 
         # current 模式需要使用完整的历史数据
         if self.report_mode == "current":
@@ -1592,7 +1608,7 @@ class NewsAnalyzer:
                     all_results, historical_id_to_name, historical_title_info, raw_rss_items
                 )
 
-                stats, html_file, ai_result, rss_items = self._run_analysis_pipeline(
+                stats, html_file, ai_result, rss_items, standalone_data, rss_new_items = self._run_analysis_pipeline(
                     all_results,
                     self.report_mode,
                     historical_title_info,
@@ -1636,7 +1652,7 @@ class NewsAnalyzer:
                     all_results, historical_id_to_name, historical_title_info, raw_rss_items
                 )
 
-                stats, html_file, ai_result, rss_items = self._run_analysis_pipeline(
+                stats, html_file, ai_result, rss_items, standalone_data, rss_new_items = self._run_analysis_pipeline(
                     all_results,
                     self.report_mode,
                     historical_title_info,
@@ -1664,7 +1680,7 @@ class NewsAnalyzer:
                 standalone_data = self._prepare_standalone_data(
                     results, id_to_name, title_info, raw_rss_items
                 )
-                stats, html_file, ai_result, rss_items = self._run_analysis_pipeline(
+                stats, html_file, ai_result, rss_items, standalone_data, rss_new_items = self._run_analysis_pipeline(
                     results,
                     self.report_mode,
                     title_info,
@@ -1686,7 +1702,7 @@ class NewsAnalyzer:
             standalone_data = self._prepare_standalone_data(
                 results, id_to_name, title_info, raw_rss_items
             )
-            stats, html_file, ai_result, rss_items = self._run_analysis_pipeline(
+            stats, html_file, ai_result, rss_items, standalone_data, rss_new_items = self._run_analysis_pipeline(
                 results,
                 self.report_mode,
                 title_info,
@@ -1709,9 +1725,8 @@ class NewsAnalyzer:
 
         # 发送通知
         if mode_strategy["should_send_notification"]:
-            standalone_data = self._prepare_standalone_data(
-                results, id_to_name, title_info, raw_rss_items
-            )
+            # standalone_data 已在分析流水线中翻译，直接复用（不再重新 prepare 原文，
+            # 避免覆盖译文、避免重复翻译，并保证网页报告与推送译文一致）
             self._send_notification_if_needed(
                 stats,
                 mode_strategy["report_type"],

@@ -77,6 +77,7 @@ class NotificationDispatcher:
         standalone_data: Optional[Dict] = None,
         display_regions: Optional[Dict] = None,
         skip_rss: bool = False,
+        skip_standalone: bool = False,
     ) -> tuple:
         """
         翻译推送内容
@@ -87,7 +88,8 @@ class NotificationDispatcher:
             rss_new_items: RSS 新增条目
             standalone_data: 独立展示区数据
             display_regions: 区域显示配置（不展示的区域跳过翻译）
-            skip_rss: 跳过 RSS 和独立展示区翻译（当数据已在上游翻译过时使用）
+            skip_rss: 跳过普通 RSS 翻译（当 RSS 已在上游翻译过时使用）
+            skip_standalone: 跳过独立展示区翻译（当 standalone 已在上游翻译过时使用）
 
         Returns:
             tuple: (翻译后的 report_data, rss_items, rss_new_items, standalone_data)
@@ -138,19 +140,19 @@ class NotificationDispatcher:
                     titles_to_translate.append(title_data.get("title", ""))
                     title_locations.append(("rss_new_items", stat_idx, title_idx))
 
-        # 5. 独立展示区 - 热榜平台
-        if standalone_data and scope.get("STANDALONE", True) and display_regions.get("STANDALONE", False):
+        # 5. 独立展示区 - 热榜平台 + RSS 源
+        # 统一由 skip_standalone 控制；standalone RSS 是独立数据集，不应被 skip_rss 跳过
+        if not skip_standalone and standalone_data and scope.get("STANDALONE", True) and display_regions.get("STANDALONE", False):
             for plat_idx, platform in enumerate(standalone_data.get("platforms", [])):
                 for item_idx, item in enumerate(platform.get("items", [])):
                     titles_to_translate.append(item.get("title", ""))
                     title_locations.append(("standalone_platforms", plat_idx, item_idx))
 
-            # 6. 独立展示区 - RSS 源（跳过已翻译的）
-            if not skip_rss:
-                for feed_idx, feed in enumerate(standalone_data.get("rss_feeds", [])):
-                    for item_idx, item in enumerate(feed.get("items", [])):
-                        titles_to_translate.append(item.get("title", ""))
-                        title_locations.append(("standalone_rss", feed_idx, item_idx))
+            # 6. 独立展示区 - RSS 源
+            for feed_idx, feed in enumerate(standalone_data.get("rss_feeds", [])):
+                for item_idx, item in enumerate(feed.get("items", [])):
+                    titles_to_translate.append(item.get("title", ""))
+                    title_locations.append(("standalone_rss", feed_idx, item_idx))
 
         if not titles_to_translate:
             print("[翻译] 没有需要翻译的内容")
@@ -259,10 +261,10 @@ class NotificationDispatcher:
                 report_data, rss_items, rss_new_items, standalone_data, display_regions
             )
         else:
-            # RSS 已翻译，仅翻译热榜 report_data 和独立展示区热榜部分
+            # RSS 和独立展示区均已在上游翻译过，仅翻译热榜 report_data
             report_data, _, _, standalone_data = self.translate_content(
                 report_data, standalone_data=standalone_data, display_regions=display_regions,
-                skip_rss=True,
+                skip_rss=True, skip_standalone=True,
             )
 
         # 飞书

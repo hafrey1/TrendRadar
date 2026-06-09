@@ -319,6 +319,7 @@ class AppContext:
         standalone_data: Optional[Dict] = None,
         frequency_file: Optional[str] = None,
         report_metadata: Optional[Dict] = None,
+        translate_report_func: Optional[Any] = None,
     ) -> str:
         """生成HTML报告"""
         return generate_html_report(
@@ -335,6 +336,7 @@ class AppContext:
             time_filename=self.format_time(),
             render_html_func=lambda *args, **kwargs: self.render_html(*args, rss_items=rss_items, rss_new_items=rss_new_items, ai_analysis=ai_analysis, standalone_data=standalone_data, **kwargs),
             report_metadata=report_metadata,
+            translate_report_func=translate_report_func,
         )
 
     def render_html(
@@ -749,6 +751,7 @@ class AppContext:
         batch_count = 0  # 跨热榜和 RSS 的全局批次计数
 
         # 处理热榜
+        succeeded_news_ids = []  # 成功分类（含无匹配）的热榜 id；仅这些标记已分析，失败批次留待重试
         for i in range(0, len(pending_news), batch_size):
             if batch_count > 0 and batch_interval > 0:
                 import time
@@ -760,13 +763,19 @@ class AppContext:
                 for n in batch
             ]
             batch_results = ai_filter.classify_batch(titles_for_ai, active_tags, interests_content)
+            batch_count += 1
+            if batch_results is None:
+                # 调用失败：不标记该批次已分析，留待下次运行重试，避免新闻静默丢失
+                print(f"[AI筛选] 热榜批次 {i // batch_size + 1}: {len(batch)} 条 → 分类失败，将在下次运行重试")
+                continue
             for r in batch_results:
                 r["source_type"] = "hotlist"
             total_results.extend(batch_results)
-            batch_count += 1
+            succeeded_news_ids.extend(n["id"] for n in batch)
             print(f"[AI筛选] 热榜批次 {i // batch_size + 1}: {len(batch)} 条 → {len(batch_results)} 条匹配")
 
         # 处理 RSS
+        succeeded_rss_ids = []  # 成功分类（含无匹配）的 RSS id；仅这些标记已分析，失败批次留待重试
         for i in range(0, len(pending_rss), batch_size):
             if batch_count > 0 and batch_interval > 0:
                 import time
@@ -778,10 +787,15 @@ class AppContext:
                 for n in batch
             ]
             batch_results = ai_filter.classify_batch(titles_for_ai, active_tags, interests_content)
+            batch_count += 1
+            if batch_results is None:
+                # 调用失败：不标记该批次已分析，留待下次运行重试
+                print(f"[AI筛选] RSS 批次 {i // batch_size + 1}: {len(batch)} 条 → 分类失败，将在下次运行重试")
+                continue
             for r in batch_results:
                 r["source_type"] = "rss"
             total_results.extend(batch_results)
-            batch_count += 1
+            succeeded_rss_ids.extend(n["id"] for n in batch)
             print(f"[AI筛选] RSS 批次 {i // batch_size + 1}: {len(batch)} 条 → {len(batch_results)} 条匹配")
 
         # 6. 保存结果
@@ -791,26 +805,25 @@ class AppContext:
             if debug and saved != len(total_results):
                 print(f"[AI筛选][DEBUG] !! 保存数量不一致: 期望 {len(total_results)}, 实际 {saved}（可能有重复记录被跳过）")
 
-        # 6.5 记录所有已分析的新闻（匹配+不匹配，用于去重）
+        # 6.5 记录已分析的新闻（匹配+不匹配，用于去重）。仅记录成功分类的批次；
+        #     失败批次的 id 不写入，使其下次运行重新分类，避免 AI 抖动导致新闻静默丢失
         matched_hotlist_ids = {r["news_item_id"] for r in total_results if r.get("source_type") == "hotlist"}
         matched_rss_ids = {r["news_item_id"] for r in total_results if r.get("source_type") == "rss"}
 
-        if pending_news:
-            hotlist_ids = [n["id"] for n in pending_news]
+        if succeeded_news_ids:
             storage.save_analyzed_news(
-                hotlist_ids, "hotlist", effective_interests_file,
+                succeeded_news_ids, "hotlist", effective_interests_file,
                 current_hash, matched_hotlist_ids
             )
 
-        if pending_rss:
-            rss_ids = [n["id"] for n in pending_rss]
+        if succeeded_rss_ids:
             storage.save_analyzed_news(
-                rss_ids, "rss", effective_interests_file,
+                succeeded_rss_ids, "rss", effective_interests_file,
                 current_hash, matched_rss_ids
             )
 
-        if pending_news or pending_rss:
-            total_analyzed = len(pending_news) + len(pending_rss)
+        if succeeded_news_ids or succeeded_rss_ids:
+            total_analyzed = len(succeeded_news_ids) + len(succeeded_rss_ids)
             total_matched = len(matched_hotlist_ids) + len(matched_rss_ids)
             print(f"[AI筛选] 已记录 {total_analyzed} 条新闻分析状态 (匹配 {total_matched}, 不匹配 {total_analyzed - total_matched})")
 
@@ -937,12 +950,14 @@ class AppContext:
             rss_new_urls: 新增 RSS 条目的 URL 集合，用于 is_new 检测
 
         Returns:
-            (hotlist_stats, rss_stats):
+            (hotlist_stats, rss_stats, rss_new_stats):
             - hotlist_stats: 与 count_word_frequency() 产出格式一致
             - rss_stats: 与 rss_items 格式一致
+            - rss_new_stats: RSS 新增区（rss_stats 中 is_new 的子集），与 rss_new_items 格式一致
         """
         hotlist_stats = []
         rss_stats = []
+        rss_new_stats = []  # AI 筛选的 RSS 新增区（is_new 子集），与关键词路径 rss_new_stats 对齐
         max_news = self.config.get("MAX_NEWS_PER_KEYWORD", 0)
         min_score = self.ai_filter_config.get("MIN_SCORE", 0)
 
@@ -1085,6 +1100,15 @@ class AppContext:
                     "position": tag_data.get("position", 9999),
                     "titles": rss_titles,
                 })
+                # 新增 RSS 区：仅保留本轮新增（is_new）的条目，供推送/HTML 的"RSS 新增"区块使用
+                new_rss_titles = [t for t in rss_titles if t.get("is_new")]
+                if new_rss_titles:
+                    rss_new_stats.append({
+                        "word": tag_name,
+                        "count": len(new_rss_titles),
+                        "position": tag_data.get("position", 9999),
+                        "titles": new_rss_titles,
+                    })
 
         if mode == "current" and filtered_count > 0:
             total_kept = sum(s["count"] for s in hotlist_stats)
@@ -1103,11 +1127,13 @@ class AppContext:
         if priority_sort_enabled:
             hotlist_stats.sort(key=lambda x: (x.get("position", 9999), -x["count"], x["word"]))
             rss_stats.sort(key=lambda x: (x.get("position", 9999), -x["count"], x["word"]))
+            rss_new_stats.sort(key=lambda x: (x.get("position", 9999), -x["count"], x["word"]))
         else:
             hotlist_stats.sort(key=lambda x: (-x["count"], x.get("position", 9999), x["word"]))
             rss_stats.sort(key=lambda x: (-x["count"], x.get("position", 9999), x["word"]))
+            rss_new_stats.sort(key=lambda x: (-x["count"], x.get("position", 9999), x["word"]))
 
-        return hotlist_stats, rss_stats
+        return hotlist_stats, rss_stats, rss_new_stats
 
     # === 资源清理 ===
 
