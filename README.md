@@ -1319,84 +1319,45 @@ ai_translation:
    <summary>👉 点击展开：<strong>飞书机器人</strong>（消息显示相对友好）</summary>
    <br>
 
+   > **注意**：原「飞书机器人助手 (BotBuilder)」将于 2026 年 6 月 30 日下线，请使用下方的**群组自定义机器人**方式配置。已有的 BotBuilder webhook 地址将失效，需要重新配置。
+
    若启用 **AI 分析**，飞书推送偶发（约 5% 概率）会有数分钟延迟（推测为平台对 AI 生成内容的合规性审核）。
 
    **GitHub Secret 配置（⚠️ Name 名称必须严格一致）：**
    - **Name（名称）**：`FEISHU_WEBHOOK_URL`（请复制粘贴此名称，不要手打）
-   - **Secret（值）**：你的飞书机器人 Webhook 地址（该链接开头类似 https://www.feishu.cn/flow/api/trigger-webhook/********）
-   <br>
+   - **Secret（值）**：你的飞书自定义机器人 Webhook 地址（格式：`https://open.feishu.cn/open-apis/bot/v2/hook/xxxxxxxxx`）
 
-   有两个方案，**方案一**配置简单，**方案二**配置复杂(但是稳定推送)
+   **配置步骤：**
 
-   其中方案一，由 **ziventian**发现并提供建议，在这里感谢他，默认是个人推送，也可以配置群组推送操作[#97](https://github.com/sansan0/TrendRadar/issues/97) ，
+   1. 进入目标群组，在群组右上角点击 **更多** 按钮，并点击 **设置**。
 
-   **方案一：**
+   ![进入群设置](_image/feishu-bot/step1-group-settings.png)
 
-   > 对部分人存在额外操作，否则会报"系统错误"。需要手机端搜索下机器人，然后开启飞书机器人应用(该建议来自于网友，可参考)
+   2. 在右侧 **设置** 界面，点击 **群机器人**。
 
-   1. 电脑浏览器打开 https://botbuilder.feishu.cn/home/my-command
+   ![点击群机器人](_image/feishu-bot/step2-group-bot.png)
 
-   2. 点击"新建机器人指令" 
+   3. 在 **群机器人** 界面点击 **添加机器人**。
 
-   3. 点击"选择触发器"，往下滑动，点击"Webhook 触发"
+   4. 在 **添加机器人** 对话框，找到并点击 **自定义机器人**。
 
-   4. 此时你会看到"Webhook 地址"，把这个链接先复制到本地记事本暂存，继续接下来的操作
+   ![选择自定义机器人](_image/feishu-bot/step3-custom-bot.png)
 
-   5. "参数"里面放上下面的内容，然后点击"完成"
+   5. 设置自定义机器人的头像、名称（如"TrendRadar 热点监控"）与描述，并点击 **添加**。
 
-   ```json
-   {
-     "message_type": "text",
-     "content": {
-       "text": "{{内容}}"
-     }
-   }
-   ```
+   ![设置机器人信息](_image/feishu-bot/step4-set-name.png)
 
-   6. 点击"选择操作" > "通过官方机器人发消息"
+   6. 获取自定义机器人的 **webhook 地址**，并点击 **完成**。
 
-   7. 消息标题填写"TrendRadar 热点监控"
+   > ⚠️ 请妥善保存此 webhook 地址，不要公布在 GitHub、博客等可公开查阅的网站上，避免地址泄露后被恶意调用发送垃圾消息。
 
-   8. 最关键的部分来了，点击 + 按钮，选择"Webhook 触发"，然后按照下面的图片摆放
+   ![复制 webhook 地址](_image/feishu-bot/step5-webhook-url.png)
 
-   ![飞书机器人配置示例](_image/feishu.png)
+   7. 将复制的 Webhook 地址配置到 GitHub Secrets 中的 `FEISHU_WEBHOOK_URL`。
 
-   9. 配置完成后，将第 4 步复制的 Webhook 地址配置到 GitHub Secrets 中的 `FEISHU_WEBHOOK_URL`
-
-   <br>
-
-   **方案二：**
-
-   1. 电脑浏览器打开 https://botbuilder.feishu.cn/home/my-app
-
-   2. 点击"新建机器人应用"
-
-   3. 进入创建的应用后，点击"流程设计" > "创建流程" > "选择触发器"
-
-   4. 往下滑动，点击"Webhook 触发"
-
-   5. 此时你会看到"Webhook 地址"，把这个链接先复制到本地记事本暂存，继续接下来的操作
-
-   6. "参数"里面放上下面的内容，然后点击"完成"
-
-   ```json
-   {
-     "message_type": "text",
-     "content": {
-       "text": "{{内容}}"
-     }
-   }
-   ```
-
-   7. 点击"选择操作" > "发送飞书消息"，勾选 "群消息"，然后点击下面的输入框，点击"我管理的群组"（如果没有群组，你可以在飞书 app 上创建群组）
-
-   8. 消息标题填写"TrendRadar 热点监控"
-
-   9. 最关键的部分来了，点击 + 按钮，选择"Webhook 触发"，然后按照下面的图片摆放
-
-   ![飞书机器人配置示例](_image/feishu.png)
-
-   10. 配置完成后，将第 5 步复制的 Webhook 地址配置到 GitHub Secrets 中的 `FEISHU_WEBHOOK_URL`
+   > 💡 配置完成后，你可以在群组名称右侧点击机器人图片，进入自定义机器人详情页，管理配置信息。
+   >
+   > 📖 官方文档：[自定义机器人使用指南](https://open.feishu.cn/document/client-docs/bot-v3/add-custom-bot)
 
    </details>
 

@@ -1265,84 +1265,45 @@ Transform from "algorithm recommendation captivity" to "actively getting the inf
 <summary> <strong>👉 Click to expand: Feishu Bot</strong> (Message display is relatively friendly)</summary>
 <br>
 
+> **Note**: The original "Feishu BotBuilder" will be discontinued on June 30, 2026. Please use the **Custom Group Bot** method below. Existing BotBuilder webhook URLs will no longer work and need to be reconfigured.
+
 **Note**: If **AI Analysis** is enabled, Feishu push notifications may occasionally (approx. 5% probability) experience a few minutes of delay. This is likely due to the platform's internal compliance auditing for AI-generated content.
 
 **GitHub Secret Configuration (⚠️ Name must match exactly):**
 - **Name**: `FEISHU_WEBHOOK_URL` (Please copy and paste this name, do not type manually)
-- **Secret (Value)**: Your Feishu bot Webhook address (link starts with https://www.feishu.cn/flow/api/trigger-webhook/********)
-<br>
+- **Secret (Value)**: Your Feishu custom bot Webhook address (format: `https://open.feishu.cn/open-apis/bot/v2/hook/xxxxxxxxx`)
 
-Two methods available, **Method 1** is simpler, **Method 2** is more complex (but stable push)
+**Configuration Steps:**
 
-Method 1 discovered and suggested by **ziventian**, thanks to them. Default is personal push, group push can be configured via [#97](https://github.com/sansan0/TrendRadar/issues/97)
+1. Enter the target group, click the **More** button at the top right of the group, and click **Settings**.
 
-**Method 1:**
+![Group Settings](_image/feishu-bot/step1-group-settings.png)
 
-> For some users, additional operations needed to avoid "System Error". Need to search for the bot on mobile and enable Feishu bot application (suggestion from community, can refer)
+2. In the **Settings** panel on the right, click **Group Bots**.
 
-1. Open in PC browser https://botbuilder.feishu.cn/home/my-command
+![Group Bots](_image/feishu-bot/step2-group-bot.png)
 
-2. Click "New Bot Command"
+3. In the **Group Bots** panel, click **Add Bot**.
 
-3. Click "Select Trigger", scroll down, click "Webhook Trigger"
+4. In the **Add Bot** dialog, find and click **Custom Bot**.
 
-4. Now you'll see "Webhook Address", copy this link to local notepad temporarily, continue with next steps
+![Select Custom Bot](_image/feishu-bot/step3-custom-bot.png)
 
-5. In "Parameters" put the following content, then click "Done"
+5. Set the custom bot's avatar, name (e.g., "TrendRadar Trending Monitor") and description, then click **Add**.
 
-```json
-{
-  "message_type": "text",
-  "content": {
-    "text": "{{Content}}"
-  }
-}
-```
+![Set Bot Info](_image/feishu-bot/step4-set-name.png)
 
-6. Click "Select Action" > "Send via Official Bot"
+6. Copy the custom bot's **webhook address**, and click **Done**.
 
-7. Message title fill "TrendRadar Trending Monitor"
+> ⚠️ Please keep this webhook address safe. Do not publish it on GitHub, blogs, or any publicly accessible websites to prevent unauthorized use.
 
-8. Most critical part, click + button, select "Webhook Trigger", then arrange as shown in image
+![Copy Webhook URL](_image/feishu-bot/step5-webhook-url.png)
 
-![Feishu Bot Config Example](_image/feishu.png)
+7. Configure the copied Webhook address in GitHub Secrets as `FEISHU_WEBHOOK_URL`.
 
-9. After configuration, put Webhook address from step 4 into GitHub Secrets `FEISHU_WEBHOOK_URL`
-
-<br>
-
-**Method 2:**
-
-1. Open in PC browser https://botbuilder.feishu.cn/home/my-app
-
-2. Click "New Bot Application"
-
-3. After entering the created application, click "Process Design" > "Create Process" > "Select Trigger"
-
-4. Scroll down, click "Webhook Trigger"
-
-5. Now you'll see "Webhook Address", copy this link to local notepad temporarily, continue with next steps
-
-6. In "Parameters" put the following content, then click "Done"
-
-```json
-{
-  "message_type": "text",
-  "content": {
-    "text": "{{Content}}"
-  }
-}
-```
-
-7. Click "Select Action" > "Send Feishu Message", check "Group Message", then click the input box below, click "Groups I Manage" (if no group, you can create one in Feishu app)
-
-8. Message title fill "TrendRadar Trending Monitor"
-
-9. Most critical part, click + button, select "Webhook Trigger", then arrange as shown in image
-
-![Feishu Bot Config Example](_image/feishu.png)
-
-10. After configuration, put Webhook address from step 5 into GitHub Secrets `FEISHU_WEBHOOK_URL`
+> 💡 After configuration, you can click the bot avatar next to the group name to enter the custom bot details page and manage its settings.
+>
+> 📖 Official documentation: [Custom Bot Guide](https://open.feishu.cn/document/client-docs/bot-v3/add-custom-bot)
 
 </details>
 
