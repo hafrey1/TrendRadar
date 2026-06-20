@@ -66,9 +66,9 @@ def format_title_for_platform(
         title_prefix = "🆕 " if title_data.get("is_new") else ""
 
         if show_source:
-            result = f"<font color='grey'>[{title_data['source_name']}]</font> {title_prefix}{formatted_title}"
+            result = f"<font color='grey'>&#91;{title_data['source_name']}&#93;</font> {title_prefix}{formatted_title}"
         elif show_keyword and keyword:
-            result = f"<font color='blue'>[{keyword}]</font> {title_prefix}{formatted_title}"
+            result = f"<font color='blue'>&#91;{keyword}&#93;</font> {title_prefix}{formatted_title}"
         else:
             result = f"{title_prefix}{formatted_title}"
 

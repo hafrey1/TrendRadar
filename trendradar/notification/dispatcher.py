@@ -12,6 +12,7 @@
 
 from __future__ import annotations
 
+import time
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional
 
 from trendradar.core.config import (
@@ -158,42 +159,70 @@ class NotificationDispatcher:
             print("[翻译] 没有需要翻译的内容")
             return report_data, rss_items, rss_new_items, standalone_data
 
-        print(f"[翻译] 共 {len(titles_to_translate)} 条标题待翻译")
+        total_count = len(titles_to_translate)
+        trans_config = self.config.get("AI_TRANSLATION", {})
+        batch_size = trans_config.get("BATCH_SIZE", 100)
+        batch_interval = trans_config.get("BATCH_INTERVAL", 2)
+        num_batches = (total_count + batch_size - 1) // batch_size
 
-        # 批量翻译
-        result = self.translator.translate_batch(titles_to_translate)
+        if num_batches > 1:
+            print(f"[翻译] 共 {total_count} 条标题待翻译，分 {num_batches} 批（每批 {batch_size} 条，间隔 {batch_interval}s）")
+        else:
+            print(f"[翻译] 共 {total_count} 条标题待翻译")
+
+        # 分批翻译
+        from trendradar.ai.translator import BatchTranslationResult
+
+        merged_result = BatchTranslationResult(total_count=total_count)
+        batch_count = 0
+
+        for i in range(0, total_count, batch_size):
+            if batch_count > 0 and batch_interval > 0:
+                time.sleep(batch_interval)
+            batch_texts = titles_to_translate[i:i + batch_size]
+            batch_num = batch_count + 1
+            if num_batches > 1:
+                print(f"[翻译] 第 {batch_num}/{num_batches} 批（{len(batch_texts)} 条）...")
+            result = self.translator.translate_batch(batch_texts)
+            merged_result.results.extend(result.results)
+            merged_result.success_count += result.success_count
+            merged_result.fail_count += result.fail_count
+
+            # debug 模式：输出每批的详细信息
+            if self.config.get("DEBUG", False):
+                batch_label = f"[翻译][DEBUG][批次 {batch_num}]" if num_batches > 1 else "[翻译][DEBUG]"
+                if result.prompt:
+                    print(f"{batch_label} === 发送给 AI 的 Prompt ===")
+                    print(result.prompt)
+                    print(f"{batch_label} === Prompt 结束 ===")
+                if result.raw_response:
+                    print(f"{batch_label} === AI 原始响应 ===")
+                    print(result.raw_response)
+                    print(f"{batch_label} === 响应结束 ===")
+                expected = len(batch_texts)
+                if result.parsed_count != expected:
+                    print(f"{batch_label} ⚠️ 行数不匹配：期望 {expected} 条，AI 返回 {result.parsed_count} 条")
+                unchanged_count = 0
+                for j, res in enumerate(result.results):
+                    global_idx = i + j + 1
+                    if not res.success and res.error:
+                        print(f"{batch_label} [{global_idx}] !! 失败: {res.error}")
+                    elif res.original_text == res.translated_text:
+                        unchanged_count += 1
+                    else:
+                        print(f"{batch_label} [{global_idx}] {res.original_text} => {res.translated_text}")
+                if unchanged_count > 0:
+                    print(f"{batch_label} （另有 {unchanged_count} 条未变化，已省略）")
+
+            batch_count += 1
+
+        result = merged_result
 
         if result.success_count == 0:
             print(f"[翻译] 翻译失败: {result.results[0].error if result.results else '未知错误'}")
             return report_data, rss_items, rss_new_items, standalone_data
 
         print(f"[翻译] 翻译完成: {result.success_count}/{result.total_count} 成功")
-
-        # debug 模式：输出完整 prompt、AI 原始响应、逐条对照
-        if self.config.get("DEBUG", False):
-            if result.prompt:
-                print(f"[翻译][DEBUG] === 发送给 AI 的 Prompt ===")
-                print(result.prompt)
-                print(f"[翻译][DEBUG] === Prompt 结束 ===")
-            if result.raw_response:
-                print(f"[翻译][DEBUG] === AI 原始响应 ===")
-                print(result.raw_response)
-                print(f"[翻译][DEBUG] === 响应结束 ===")
-            # 行数不匹配警告
-            expected = len(titles_to_translate)
-            if result.parsed_count != expected:
-                print(f"[翻译][DEBUG] ⚠️ 行数不匹配：期望 {expected} 条，AI 返回 {result.parsed_count} 条")
-            # 逐条对照
-            unchanged_count = 0
-            for i, res in enumerate(result.results):
-                if not res.success and res.error:
-                    print(f"[翻译][DEBUG] [{i+1}] !! 失败: {res.error}")
-                elif res.original_text == res.translated_text:
-                    unchanged_count += 1
-                else:
-                    print(f"[翻译][DEBUG] [{i+1}] {res.original_text} => {res.translated_text}")
-            if unchanged_count > 0:
-                print(f"[翻译][DEBUG] （另有 {unchanged_count} 条未变化，已省略）")
 
         # 回填翻译结果（仅在翻译文本非空时替换，防止空翻译覆盖原始标题）
         for i, (loc_type, idx1, idx2) in enumerate(title_locations):

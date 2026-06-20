@@ -1018,6 +1018,8 @@ function renderControls(mod) {
             html = createToggleControl(mod.key, "enabled", "开启 AI 自动翻译");
             html += createInputControl(mod.key, "language", "目标语言");
             html += createInputControl(mod.key, "prompt_file", "提示词配置文件");
+            html += createNumberControl(mod.key, "batch_size", "每批翻译标题数");
+            html += createNumberControl(mod.key, "batch_interval", "分批间隔 (秒)");
             break;
     }
 
