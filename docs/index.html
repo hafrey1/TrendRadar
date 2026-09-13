@@ -22,21 +22,26 @@
         <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
             <a href="https://github.com/sansan0/TrendRadar" target="_blank" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
                 <i class="fa-solid fa-sliders text-blue-600 text-lg"></i>
-                <span class="font-bold text-lg tracking-tight text-gray-900">TrendRadar <span class="text-gray-500 text-xs font-normal ml-2">可视化配置编辑器 </span></span>
+                <span class="font-bold text-lg tracking-tight text-gray-900">TrendRadar <span class="text-gray-500 text-xs font-normal ml-2" data-i18n="nav.subtitle">可视化配置编辑器 </span></span>
             </a>
 
             <!-- 隐私安全提示 -->
             <div class="hidden lg:flex items-center text-xs text-gray-500 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-100 select-none">
                 <i class="fa-solid fa-shield-halved mr-1.5 text-green-500"></i>
-                <span>纯静态页面，数据仅保存在你的本地浏览器，请放心使用</span>
+                <span data-i18n="nav.privacy">纯静态页面，数据仅保存在你的本地浏览器，请放心使用</span>
             </div>
 
-            <div class="flex gap-3">
+            <div class="flex items-center gap-3">
+                <!-- 中英文切换 -->
+                <button id="lang-toggle-btn" onclick="switchLang(getLang()==='zh'?'en':'zh')" class="flex items-center gap-1.5 text-xs font-semibold text-gray-600 hover:text-blue-600 hover:bg-blue-50 px-2.5 py-1.5 rounded-md border border-gray-200 transition-colors select-none" title="切换到 English">
+                    <i class="fa-solid fa-globe text-gray-400"></i>
+                    <span id="lang-toggle-label">EN</span>
+                </button>
                 <button onclick="openLoadConfigModal()" class="text-xs text-blue-600 hover:text-blue-800 underline flex items-center gap-1">
-                    <i class="fa-solid fa-cloud-arrow-down"></i>加载官网最新配置
+                    <i class="fa-solid fa-cloud-arrow-down"></i><span data-i18n="nav.loadLatest">加载官网最新配置</span>
                 </button>
                 <button onclick="copyResult()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded text-sm font-medium transition-colors shadow-sm">
-                    <i class="fa-regular fa-copy mr-1.5"></i>复制配置
+                    <i class="fa-regular fa-copy mr-1.5"></i><span data-i18n="nav.copyConfig">复制配置</span>
                 </button>
             </div>
         </div>
@@ -62,18 +67,18 @@
                 <!-- 保存时间显示 -->
                 <div id="save-time-config" class="save-time-badge px-3 text-[10px] text-gray-500 flex items-center gap-1">
                     <i class="fa-regular fa-clock"></i>
-                    <span id="config-save-label" class="hidden">已保存: </span>
-                    <span id="config-save-time" class="text-gray-400" title="未保存">未保存</span>
+                    <span id="config-save-label" class="hidden" data-i18n="save.saved">已保存: </span>
+                    <span id="config-save-time" class="text-gray-400" title="未保存" data-i18n="save.notSaved">未保存</span>
                 </div>
                 <div id="save-time-frequency" class="save-time-badge hidden px-3 text-[10px] text-gray-500 flex items-center gap-1">
                     <i class="fa-regular fa-clock"></i>
-                    <span id="frequency-save-label" class="hidden">已保存: </span>
-                    <span id="frequency-save-time" class="text-gray-400" title="未保存">未保存</span>
+                    <span id="frequency-save-label" class="hidden" data-i18n="save.saved">已保存: </span>
+                    <span id="frequency-save-time" class="text-gray-400" title="未保存" data-i18n="save.notSaved">未保存</span>
                 </div>
                 <div id="save-time-timeline" class="save-time-badge hidden px-3 text-[10px] text-gray-500 flex items-center gap-1">
                     <i class="fa-regular fa-clock"></i>
-                    <span id="timeline-save-label" class="hidden">已保存: </span>
-                    <span id="timeline-save-time" class="text-gray-400" title="未保存">未保存</span>
+                    <span id="timeline-save-label" class="hidden" data-i18n="save.saved">已保存: </span>
+                    <span id="timeline-save-time" class="text-gray-400" title="未保存" data-i18n="save.notSaved">未保存</span>
                 </div>
             </div>
 
@@ -102,10 +107,10 @@
         <div class="flex-1 flex flex-col bg-gray-50 min-w-0">
             <div class="flex items-center justify-between px-6 py-3 bg-white border-b border-gray-200">
                 <div class="flex items-center gap-3">
-                    <span class="text-sm font-bold text-gray-700"><i class="fa-solid fa-list-check mr-2"></i><span id="right-panel-title">配置模块</span></span>
+                    <span class="text-sm font-bold text-gray-700"><i class="fa-solid fa-list-check mr-2"></i><span id="right-panel-title" data-i18n="panel.configModules">配置模块</span></span>
                     <button id="version-check-btn" onclick="checkVersion()" class="text-xs bg-indigo-500 hover:bg-indigo-600 text-white px-3 py-1 rounded shadow-sm transition-all flex items-center gap-1.5" title="检测 config.yaml 版本">
                         <i class="fa-solid fa-code-compare"></i>
-                        <span>版本检测</span>
+                        <span data-i18n="panel.versionCheck">版本检测</span>
                     </button>
                     <button onclick="resetToDefault()" class="text-xs text-gray-400 hover:text-red-500 transition-colors px-2 py-1" title="重置当前内容为默认状态">
                         <i class="fa-solid fa-rotate-left"></i>
@@ -143,9 +148,9 @@
                     <div class="w-6 h-6 bg-gradient-to-br from-orange-400 to-pink-500 rounded-lg flex items-center justify-center">
                         <i class="fa-solid fa-heart text-white text-[10px]"></i>
                     </div>
-                    <span class="text-sm font-bold text-gray-700 tracking-tight">支持项目</span>
+                    <span class="text-sm font-bold text-gray-700 tracking-tight" data-i18n="sidebar.title">支持项目</span>
                 </div>
-                <p class="sidebar-quote text-[10px] text-gray-400 mt-1.5 leading-relaxed italic">若 TrendRadar 曾为你捕捉价值，不妨为它注入动力，助其持续进化</p>
+                <p class="sidebar-quote text-[10px] text-gray-400 mt-1.5 leading-relaxed italic" data-i18n="sidebar.quote">若 TrendRadar 曾为你捕捉价值，不妨为它注入动力，助其持续进化</p>
             </div>
 
             <!-- 卡片列表 -->
@@ -158,12 +163,12 @@
                             <i class="fa-solid fa-star"></i>
                         </div>
                         <div class="min-w-0">
-                            <div class="text-xs font-bold text-gray-800 leading-tight">点亮 Star</div>
-                            <div class="text-[10px] text-gray-400 leading-tight mt-0.5">让更多人发现它</div>
+                            <div class="text-xs font-bold text-gray-800 leading-tight" data-i18n="sidebar.star">点亮 Star</div>
+                            <div class="text-[10px] text-gray-400 leading-tight mt-0.5" data-i18n="sidebar.starDesc">让更多人发现它</div>
                         </div>
                     </div>
                     <div class="sidebar-cta bg-gradient-to-r from-orange-400 to-red-500 text-white group-hover:from-orange-500 group-hover:to-red-600 shadow-sm group-hover:shadow-md">
-                        <i class="fa-brands fa-github mr-1"></i>前往 GitHub
+                        <i class="fa-brands fa-github mr-1"></i><span data-i18n="sidebar.goGithub">前往 GitHub</span>
                     </div>
                 </a>
 
@@ -174,8 +179,8 @@
                             <i class="fa-brands fa-weixin"></i>
                         </div>
                         <div class="min-w-0">
-                            <div class="text-xs font-bold text-gray-800 leading-tight">不迷路</div>
-                            <div class="text-[10px] text-gray-400 leading-tight mt-0.5">获取更新通知</div>
+                            <div class="text-xs font-bold text-gray-800 leading-tight" data-i18n="sidebar.follow">不迷路</div>
+                            <div class="text-[10px] text-gray-400 leading-tight mt-0.5" data-i18n="sidebar.followDesc">获取更新通知</div>
                         </div>
                     </div>
                     <div class="flex justify-center relative">
@@ -183,10 +188,10 @@
                             <img src="./assets/weixin.webp" alt="微信公众号" class="w-full h-full object-contain">
                         </div>
                         <div class="sidebar-enlarge-hint">
-                            <i class="fa-solid fa-expand mr-1"></i>点击放大
+                            <i class="fa-solid fa-expand mr-1"></i><span data-i18n="sidebar.clickEnlarge">点击放大</span>
                         </div>
                     </div>
-                    <p class="text-[10px] text-gray-400 text-center mt-2">扫码关注公众号</p>
+                    <p class="text-[10px] text-gray-400 text-center mt-2" data-i18n="sidebar.scanFollow">扫码关注公众号</p>
                 </div>
 
                 <!-- 03: 随心赞赏 -->
@@ -196,8 +201,8 @@
                             <i class="fa-solid fa-hand-holding-heart"></i>
                         </div>
                         <div class="min-w-0">
-                            <div class="text-xs font-bold text-gray-800 leading-tight">随心赞赏</div>
-                            <div class="text-[10px] text-gray-400 leading-tight mt-0.5">1 元也是鼓励</div>
+                            <div class="text-xs font-bold text-gray-800 leading-tight" data-i18n="sidebar.donate">随心赞赏</div>
+                            <div class="text-[10px] text-gray-400 leading-tight mt-0.5" data-i18n="sidebar.donateDesc">1 元也是鼓励</div>
                         </div>
                     </div>
                     <div class="flex justify-center relative">
@@ -205,10 +210,10 @@
                             <img src="https://cdn-1258574687.cos.ap-shanghai.myqcloud.com/img/%2F2026%2F01%2F18ecce7c224ce0ea4c59394c29e408f8-e0d1db45.webp" alt="微信支付" class="w-full h-full object-contain">
                         </div>
                         <div class="sidebar-enlarge-hint">
-                            <i class="fa-solid fa-expand mr-1"></i>点击放大
+                            <i class="fa-solid fa-expand mr-1"></i><span data-i18n="sidebar.clickEnlarge">点击放大</span>
                         </div>
                     </div>
-                    <p class="text-[10px] text-gray-400 text-center mt-2">微信扫码 · 丰俭由人</p>
+                    <p class="text-[10px] text-gray-400 text-center mt-2" data-i18n="sidebar.scanDonate">微信扫码 · 丰俭由人</p>
                 </div>
 
                 <!-- 04: 探索更多 -->
@@ -218,19 +223,19 @@
                             <i class="fa-solid fa-map-location-dot"></i>
                         </div>
                         <div class="min-w-0">
-                            <div class="text-xs font-bold text-gray-800 leading-tight">探索更多</div>
-                            <div class="text-[10px] text-gray-400 leading-tight mt-0.5">另一个用心的作品</div>
+                            <div class="text-xs font-bold text-gray-800 leading-tight" data-i18n="sidebar.explore">探索更多</div>
+                            <div class="text-[10px] text-gray-400 leading-tight mt-0.5" data-i18n="sidebar.exploreDesc">另一个用心的作品</div>
                         </div>
                     </div>
                     <div class="sidebar-cta bg-red-50 text-red-600 border border-red-100 group-hover:bg-red-100 group-hover:text-red-700">
-                        <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i>去看看
+                        <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i><span data-i18n="sidebar.goExplore">去看看</span>
                     </div>
                 </a>
             </div>
 
             <!-- 底部寄语 -->
             <div class="px-3 py-2.5 border-t border-gray-100 bg-white/60">
-                <p class="text-[10px] text-gray-300 text-center italic font-serif tracking-wide">"开源不易，感谢支持"</p>
+                <p class="text-[10px] text-gray-300 text-center italic font-serif tracking-wide" data-i18n="sidebar.footer">"开源不易，感谢支持"</p>
             </div>
             </div>
         </div>
@@ -241,25 +246,25 @@
     <div id="rss-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-bold text-gray-800"><i class="fa-solid fa-rss mr-2 text-orange-500"></i>添加 RSS 源</h3>
+                <h3 class="text-lg font-bold text-gray-800"><i class="fa-solid fa-rss mr-2 text-orange-500"></i><span data-i18n="rssModal.addTitle">添加 RSS 源</span></h3>
                 <button onclick="closeRssModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-times text-xl"></i></button>
             </div>
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">源 ID（唯一标识，英文）</label>
-                    <input type="text" id="rss-id" placeholder="例如: my-blog" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <label class="block text-xs font-bold text-gray-600 mb-1" data-i18n="rssModal.idLabel">源 ID（唯一标识，英文）</label>
+                    <input type="text" id="rss-id" placeholder="例如: my-blog" data-i18n-placeholder="rssModal.idPlaceholder" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">显示名称</label>
-                    <input type="text" id="rss-name" placeholder="例如: 我的博客" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <label class="block text-xs font-bold text-gray-600 mb-1" data-i18n="rssModal.nameLabel">显示名称</label>
+                    <input type="text" id="rss-name" placeholder="例如: 我的博客" data-i18n-placeholder="rssModal.namePlaceholder" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">RSS URL</label>
+                    <label class="block text-xs font-bold text-gray-600 mb-1" data-i18n="rssModal.urlLabel">RSS URL</label>
                     <input type="text" id="rss-url" placeholder="https://example.com/feed.xml" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">最大文章年龄（天，可选）</label>
-                    <input type="number" id="rss-max-age" placeholder="留空使用全局设置" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <label class="block text-xs font-bold text-gray-600 mb-1" data-i18n="rssModal.maxAgeLabel">最大文章年龄（天，可选）</label>
+                    <input type="number" id="rss-max-age" placeholder="留空使用全局设置" data-i18n-placeholder="rssModal.maxAgePlaceholder" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
             </div>
 
@@ -267,7 +272,7 @@
             <div class="mt-5 border-t border-gray-100 pt-4">
                 <button type="button" onclick="toggleRssTips()" class="w-full flex items-center justify-between text-xs text-orange-600 hover:text-orange-700 bg-orange-50 hover:bg-orange-100 px-3 py-2 rounded-lg transition-all group">
                     <span class="font-bold flex items-center gap-1.5">
-                        <i class="fa-regular fa-lightbulb"></i> RSS 订阅灵感 & 参考库 <span class="font-normal opacity-70 ml-1">(内附常用源)</span>
+                        <i class="fa-regular fa-lightbulb"></i> <span data-i18n="rssModal.tipsTitle">RSS 订阅灵感 & 参考库</span> <span class="font-normal opacity-70 ml-1" data-i18n="rssModal.tipsHasFeeds">(内附常用源)</span>
                     </span>
                     <i id="rss-tips-icon" class="fa-solid fa-chevron-down transition-transform duration-200 text-orange-400 group-hover:text-orange-600" style="transform: rotate(180deg);"></i>
                 </button>
@@ -278,7 +283,7 @@
                     <div class="bg-white border border-gray-100 rounded-lg p-3 shadow-sm">
                         <div class="flex items-center gap-2 mb-2">
                             <i class="fa-brands fa-microsoft text-blue-500"></i>
-                            <span class="font-bold text-gray-700">Bing 新闻 (支持任意关键词)</span>
+                            <span class="font-bold text-gray-700" data-i18n="rssModal.bingNews">Bing 新闻 (支持任意关键词)</span>
                         </div>
                         <div class="grid grid-cols-2 gap-2 mb-2">
                              <button onclick="fillRssUrl('https://www.bing.com/news/search?q=科技+编程&format=RSS')" class="text-left text-[10px] border border-gray-200 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-600 rounded px-2 py-1.5 transition-colors truncate" title="点击填入">
@@ -304,7 +309,7 @@
                     <div class="bg-white border border-gray-100 rounded-lg p-3 shadow-sm">
                         <div class="flex items-center gap-2 mb-2">
                             <i class="fa-solid fa-book-open text-purple-500"></i>
-                            <span class="font-bold text-gray-700">更多 RSS 源参考</span>
+                            <span class="font-bold text-gray-700" data-i18n="rssModal.moreRef">更多 RSS 源参考</span>
                         </div>
                         <div class="flex flex-wrap gap-2 text-xs">
                              <a href="https://github.com/tuan3w/awesome-tech-rss" target="_blank" class="text-blue-600 hover:underline flex items-center bg-blue-50 px-2 py-1 rounded">
@@ -318,14 +323,14 @@
 
                     <!-- 免责声明 -->
                     <div class="text-[10px] text-gray-400 italic leading-relaxed px-1">
-                        <i class="fa-solid fa-shield-halved mr-1 text-gray-300"></i>免责声明：以上 RSS 示例及第三方工具均源自互联网，开发者未一一验证其长期有效性，请你在使用前自行核实。
+                        <i class="fa-solid fa-shield-halved mr-1 text-gray-300"></i><span data-i18n="rssModal.disclaimer">免责声明：以上 RSS 示例及第三方工具均源自互联网，开发者未一一验证其长期有效性，请你在使用前自行核实。</span>
                     </div>
                 </div>
             </div>
 
             <div class="flex justify-end gap-2 mt-6">
-                <button onclick="closeRssModal()" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">取消</button>
-                <button onclick="confirmAddRss()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">添加</button>
+                <button onclick="closeRssModal()" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg" data-i18n="common.cancel">取消</button>
+                <button onclick="confirmAddRss()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700" data-i18n="common.add">添加</button>
             </div>
         </div>
     </div>
@@ -334,17 +339,17 @@
     <div id="platform-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-bold text-gray-800"><i class="fa-solid fa-layer-group mr-2 text-green-600"></i>添加热榜平台</h3>
+                <h3 class="text-lg font-bold text-gray-800"><i class="fa-solid fa-layer-group mr-2 text-green-600"></i><span data-i18n="platModal.title">添加热榜平台</span></h3>
                 <button onclick="closePlatformModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-times text-xl"></i></button>
             </div>
 
             <!-- 标签页切换 -->
             <div class="flex border-b border-gray-200 mb-4">
                 <button onclick="switchPlatformTab('select')" id="tab-platform-select" class="flex-1 py-2 text-sm font-bold text-blue-600 border-b-2 border-blue-600 transition-colors">
-                    <i class="fa-solid fa-list mr-1"></i>选择预设
+                    <i class="fa-solid fa-list mr-1"></i><span data-i18n="platModal.selectPreset">选择预设</span>
                 </button>
                 <button onclick="switchPlatformTab('custom')" id="tab-platform-custom" class="flex-1 py-2 text-sm font-bold text-gray-500 border-b-2 border-transparent hover:text-gray-700 transition-colors">
-                    <i class="fa-solid fa-pen-to-square mr-1"></i>手动输入
+                    <i class="fa-solid fa-pen-to-square mr-1"></i><span data-i18n="platModal.manualInput">手动输入</span>
                 </button>
             </div>
 
@@ -354,28 +359,28 @@
                     <!-- 动态生成可用平台 -->
                 </div>
                 <div id="no-platforms-tip" class="hidden text-center py-6 text-gray-500 text-sm bg-gray-50 rounded">
-                    <i class="fa-solid fa-check-circle text-green-500 mr-2"></i>所有预设平台已添加
+                    <i class="fa-solid fa-check-circle text-green-500 mr-2"></i><span data-i18n="platModal.allAdded">所有预设平台已添加</span>
                 </div>
             </div>
 
             <!-- 2. 手动输入平台 -->
             <div id="platform-custom-panel" class="hidden space-y-4">
                 <div class="bg-blue-50 border border-blue-100 rounded p-3 mb-3 text-xs text-blue-800">
-                    <i class="fa-solid fa-info-circle mr-1"></i>自定义平台需要后端爬虫支持，此处仅用于配置占位。
+                    <i class="fa-solid fa-info-circle mr-1"></i><span data-i18n="platModal.customNote">自定义平台需要后端爬虫支持，此处仅用于配置占位。</span>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">平台 Key（英文）</label>
-                    <input type="text" id="custom-platform-key" placeholder="例如: sspai" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <label class="block text-xs font-bold text-gray-600 mb-1" data-i18n="platModal.keyLabel">平台 Key（英文）</label>
+                    <input type="text" id="custom-platform-key" placeholder="例如: sspai" data-i18n-placeholder="platModal.keyPlaceholder" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">显示名称</label>
-                    <input type="text" id="custom-platform-name" placeholder="例如: 少数派" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <label class="block text-xs font-bold text-gray-600 mb-1" data-i18n="platModal.nameLabel">显示名称</label>
+                    <input type="text" id="custom-platform-name" placeholder="例如: 少数派" data-i18n-placeholder="platModal.namePlaceholder" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
             </div>
 
             <div class="flex justify-end gap-2 mt-6">
-                <button onclick="closePlatformModal()" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">取消</button>
-                <button onclick="confirmAddPlatform()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">添加</button>
+                <button onclick="closePlatformModal()" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg" data-i18n="common.cancel">取消</button>
+                <button onclick="confirmAddPlatform()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700" data-i18n="common.add">添加</button>
             </div>
         </div>
     </div>
@@ -384,15 +389,15 @@
     <div id="wordgroup-type-modal" class="modal-overlay hidden">
         <div class="modal-content max-w-2xl">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-bold text-gray-800"><i class="fa-solid fa-layer-group mr-2 text-blue-500"></i>选择词组类型</h3>
+                <h3 class="text-lg font-bold text-gray-800"><i class="fa-solid fa-layer-group mr-2 text-blue-500"></i><span data-i18n="wgModal.title">选择词组类型</span></h3>
                 <button onclick="closeWordGroupTypeModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-times text-xl"></i></button>
             </div>
             <div class="space-y-3">
                 <!-- 组别名类型 -->
                 <div onclick="confirmAddWordGroup('group')" class="cursor-pointer border-2 border-orange-200 bg-orange-50 rounded-lg p-4 hover:border-orange-400 hover:bg-orange-100 transition-all">
                     <div class="flex items-center gap-3">
-                        <span class="text-xs bg-orange-500 text-white px-2 py-1 rounded font-bold">组别名</span>
-                        <span class="font-bold text-gray-800">多关键词词组（推荐）</span>
+                        <span class="text-xs bg-orange-500 text-white px-2 py-1 rounded font-bold" data-i18n="wgModal.groupAlias">组别名</span>
+                        <span class="font-bold text-gray-800" data-i18n="wgModal.groupAliasDesc">多关键词词组（推荐）</span>
                     </div>
                     <div class="mt-2 text-sm text-gray-600">
                         <div class="font-mono bg-white rounded p-2 text-xs border border-orange-200">
@@ -402,30 +407,30 @@
                             <div>朝鲜</div>
                         </div>
                         <div class="mt-2 text-xs text-gray-500">
-                            <i class="fa-solid fa-check-circle text-orange-500 mr-1"></i>适用于：多个关键词归为一组，统一显示为组名
+                            <i class="fa-solid fa-check-circle text-orange-500 mr-1"></i><span data-i18n="wgModal.groupAliasUse">适用于：多个关键词归为一组，统一显示为组名</span>
                         </div>
                     </div>
                 </div>
                 <!-- 单个别名类型 -->
                 <div onclick="confirmAddWordGroup('alias')" class="cursor-pointer border-2 border-teal-200 bg-teal-50 rounded-lg p-4 hover:border-teal-400 hover:bg-teal-100 transition-all">
                     <div class="flex items-center gap-3">
-                        <span class="text-xs bg-teal-500 text-white px-2 py-1 rounded font-bold">单个别名</span>
-                        <span class="font-bold text-gray-800">正则/关键词 + 别名</span>
+                        <span class="text-xs bg-teal-500 text-white px-2 py-1 rounded font-bold" data-i18n="wgModal.singleAlias">单个别名</span>
+                        <span class="font-bold text-gray-800" data-i18n="wgModal.singleAliasDesc">正则/关键词 + 别名</span>
                     </div>
                     <div class="mt-2 text-sm text-gray-600">
                         <div class="font-mono bg-white rounded p-2 text-xs border border-teal-200">
                             <div>/胖东来|于东来/ <span class="text-teal-600">=></span> 胖东来</div>
                         </div>
                         <div class="mt-2 text-xs text-gray-500">
-                            <i class="fa-solid fa-check-circle text-teal-500 mr-1"></i>适用于：用正则匹配多个词，显示为一个别名（前后有空行分隔）
+                            <i class="fa-solid fa-check-circle text-teal-500 mr-1"></i><span data-i18n="wgModal.singleAliasUse">适用于：用正则匹配多个词，显示为一个别名（前后有空行分隔）</span>
                         </div>
                     </div>
                 </div>
                 <!-- 连续别名类型 -->
                 <div onclick="confirmAddWordGroup('multi-alias')" class="cursor-pointer border-2 border-purple-200 bg-purple-50 rounded-lg p-4 hover:border-purple-400 hover:bg-purple-100 transition-all">
                     <div class="flex items-center gap-3">
-                        <span class="text-xs bg-purple-500 text-white px-2 py-1 rounded font-bold">连续别名组</span>
-                        <span class="font-bold text-gray-800">多个相关品牌/词组</span>
+                        <span class="text-xs bg-purple-500 text-white px-2 py-1 rounded font-bold" data-i18n="wgModal.multiAlias">连续别名组</span>
+                        <span class="font-bold text-gray-800" data-i18n="wgModal.multiAliasDesc">多个相关品牌/词组</span>
                     </div>
                     <div class="mt-2 text-sm text-gray-600">
                         <div class="font-mono bg-white rounded p-2 text-xs border border-purple-200">
@@ -433,28 +438,28 @@
                             <div>/众擎|EngineAI/ <span class="text-purple-600">=></span> 众擎机器人</div>
                         </div>
                         <div class="mt-2 text-xs text-gray-500">
-                            <i class="fa-solid fa-check-circle text-purple-500 mr-1"></i>适用于：多个相关品牌放在一起（<strong>无空行分隔</strong>）
+                            <i class="fa-solid fa-check-circle text-purple-500 mr-1"></i><span data-i18n="wgModal.multiAliasUse">适用于：多个相关品牌放在一起（<strong>无空行分隔</strong>）</span>
                         </div>
                     </div>
                 </div>
                 <!-- 普通词组类型 -->
                 <div onclick="confirmAddWordGroup('plain')" class="cursor-pointer border-2 border-gray-200 bg-gray-50 rounded-lg p-4 hover:border-gray-400 hover:bg-gray-100 transition-all">
                     <div class="flex items-center gap-3">
-                        <span class="text-xs bg-gray-500 text-white px-2 py-1 rounded font-bold">普通词组</span>
-                        <span class="font-bold text-gray-800">简单关键词</span>
+                        <span class="text-xs bg-gray-500 text-white px-2 py-1 rounded font-bold" data-i18n="wgModal.plain">普通词组</span>
+                        <span class="font-bold text-gray-800" data-i18n="wgModal.plainDesc">简单关键词</span>
                     </div>
                     <div class="mt-2 text-sm text-gray-600">
                         <div class="font-mono bg-white rounded p-2 text-xs border border-gray-200">
                             <div>申奥</div>
                         </div>
                         <div class="mt-2 text-xs text-gray-500">
-                            <i class="fa-solid fa-check-circle text-gray-500 mr-1"></i>适用于：单个或少量普通关键词
+                            <i class="fa-solid fa-check-circle text-gray-500 mr-1"></i><span data-i18n="wgModal.plainUse">适用于：单个或少量普通关键词</span>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="flex justify-end gap-2 mt-6">
-                <button onclick="closeWordGroupTypeModal()" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">取消</button>
+                <button onclick="closeWordGroupTypeModal()" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg" data-i18n="common.cancel">取消</button>
             </div>
         </div>
     </div>
@@ -487,25 +492,25 @@
     <div id="tl-new-preset-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-bold text-gray-800"><i class="fa-solid fa-calendar-plus mr-2 text-purple-600"></i>新建调度模式</h3>
+                <h3 class="text-lg font-bold text-gray-800"><i class="fa-solid fa-calendar-plus mr-2 text-purple-600"></i><span data-i18n="tlModal.newPreset">新建调度模式</span></h3>
                 <button onclick="closeTlNewPresetModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-times text-xl"></i></button>
             </div>
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">模式标识 (key)</label>
-                    <input type="text" id="tl-new-preset-key" placeholder="英文标识，如 my_schedule" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm">
+                    <label class="block text-xs font-bold text-gray-600 mb-1" data-i18n="tlModal.presetKeyLabel">模式标识 (key)</label>
+                    <input type="text" id="tl-new-preset-key" placeholder="英文标识，如 my_schedule" data-i18n-placeholder="tlModal.presetKeyPlaceholder" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm">
                     <p class="text-[10px] text-gray-400 mt-1">仅支持英文、数字和下划线，将作为 YAML 中的 key</p>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">显示名称</label>
+                    <label class="block text-xs font-bold text-gray-600 mb-1" data-i18n="tlModal.nameLabel">显示名称</label>
                     <input type="text" id="tl-new-preset-name" placeholder="如：我的调度" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">描述（可选）</label>
+                    <label class="block text-xs font-bold text-gray-600 mb-1" data-i18n="tlModal.descLabel">描述（可选）</label>
                     <input type="text" id="tl-new-preset-desc" placeholder="简短描述此模式的用途" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">基于模板</label>
+                    <label class="block text-xs font-bold text-gray-600 mb-1" data-i18n="tlModal.templateLabel">基于模板</label>
                     <select id="tl-new-preset-template" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm">
                         <option value="">空白模板（仅采集，不推送不分析）</option>
                     </select>
@@ -513,8 +518,8 @@
                 </div>
             </div>
             <div class="flex justify-end gap-2 mt-6">
-                <button onclick="closeTlNewPresetModal()" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">取消</button>
-                <button onclick="confirmTlNewPreset()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">创建</button>
+                <button onclick="closeTlNewPresetModal()" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg" data-i18n="common.cancel">取消</button>
+                <button onclick="confirmTlNewPreset()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700" data-i18n="tlModal.create">创建</button>
             </div>
         </div>
     </div>
@@ -523,40 +528,41 @@
     <div id="tl-new-period-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-bold text-gray-800"><i class="fa-solid fa-clock-rotate-left mr-2 text-blue-600"></i>新增时间段</h3>
+                <h3 class="text-lg font-bold text-gray-800"><i class="fa-solid fa-clock-rotate-left mr-2 text-blue-600"></i><span data-i18n="tlModal.newPeriod">新增时间段</span></h3>
                 <button onclick="closeTlNewPeriodModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-times text-xl"></i></button>
             </div>
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">时间段标识 (key)</label>
-                    <input type="text" id="tl-new-period-key" placeholder="英文标识，如 morning_push" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                    <label class="block text-xs font-bold text-gray-600 mb-1" data-i18n="tlModal.periodKeyLabel">时间段标识 (key)</label>
+                    <input type="text" id="tl-new-period-key" placeholder="英文标识，如 morning_push" data-i18n-placeholder="tlModal.periodKeyPlaceholder" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
                     <p class="text-[10px] text-gray-400 mt-1">仅支持英文、数字和下划线</p>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">显示名称</label>
-                    <input type="text" id="tl-new-period-name" placeholder="如：晨间推送" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                    <label class="block text-xs font-bold text-gray-600 mb-1" data-i18n="tlModal.nameLabel">显示名称</label>
+                    <input type="text" id="tl-new-period-name" placeholder="如：晨间推送" data-i18n-placeholder="tlModal.periodNamePlaceholder" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-gray-600 mb-1">开始时间</label>
+                        <label class="block text-xs font-bold text-gray-600 mb-1" data-i18n="tlModal.startTime">开始时间</label>
                         <input type="time" id="tl-new-period-start" value="09:00" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-600 mb-1">结束时间</label>
+                        <label class="block text-xs font-bold text-gray-600 mb-1" data-i18n="tlModal.endTime">结束时间</label>
                         <input type="time" id="tl-new-period-end" value="11:00" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
                     </div>
                 </div>
                 <div class="bg-blue-50 border border-blue-100 rounded p-3 text-xs text-blue-700">
-                    <i class="fa-solid fa-info-circle mr-1"></i>如果开始时间 > 结束时间（如 22:00～01:00），将自动识别为跨午夜时间段。
+                    <i class="fa-solid fa-info-circle mr-1"></i><span data-i18n="tlModal.crossMidnight">如果开始时间 > 结束时间（如 22:00～01:00），将自动识别为跨午夜时间段。</span>
                 </div>
             </div>
             <div class="flex justify-end gap-2 mt-6">
-                <button onclick="closeTlNewPeriodModal()" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">取消</button>
-                <button onclick="confirmTlNewPeriod()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">添加</button>
+                <button onclick="closeTlNewPeriodModal()" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg" data-i18n="common.cancel">取消</button>
+                <button onclick="confirmTlNewPeriod()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700" data-i18n="common.add">添加</button>
             </div>
         </div>
     </div>
 
+    <script src="./assets/i18n.js"></script>
     <script src="./assets/script.js"></script>
 </body>
 </html>
