@@ -2,11 +2,11 @@ name: Sync TrendRadar Template
 
 on:
   schedule:
-    - cron: "0 3 * * *"   # 每日凌晨3点（UTC）
-  workflow_dispatch:      # 支持手动触发
+    - cron: "0 3 * * *"   # 每天北京时间 11:00
+  workflow_dispatch:
 
 permissions:
-  contents: write   # 👈 必须加这个！
+  contents: write
 
 jobs:
   sync:
@@ -14,48 +14,84 @@ jobs:
 
     steps:
       - name: 1. Checkout 仓库
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: 2. 配置 Git
         run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: 3. 添加 upstream
+      - name: 3. 获取官方 TrendRadar
         run: |
+          git remote remove upstream 2>/dev/null || true
           git remote add upstream https://github.com/sansan0/TrendRadar.git
-          git fetch upstream
+          git fetch upstream master
 
-      - name: 4. 创建同步分支
+      - name: 4. 保存自己的配置和 Workflow
         run: |
-          git checkout -b auto-sync
+          mkdir -p /tmp/my-config
+          mkdir -p /tmp/my-workflows
 
-      - name: 5. 合并模板
+          if [ -d "config" ]; then
+            cp -a config /tmp/my-config/
+          fi
+
+          if [ -d ".github/workflows" ]; then
+            cp -a .github/workflows /tmp/my-workflows/
+          fi
+
+          for file in .env .env.local; do
+            if [ -f "$file" ]; then
+              cp "$file" "/tmp/my-config/$file"
+            fi
+          done
+
+      - name: 5. 同步官方代码
         run: |
-          git merge upstream/master --allow-unrelated-histories || true
+          git checkout upstream/master -- .
 
-      - name: 6. 使用模板代码（核心）
+      - name: 6. 恢复自己的配置
         run: |
-          git checkout --theirs . || true
+          if [ -d "/tmp/my-config/config" ]; then
+            rm -rf config
+            cp -a /tmp/my-config/config .
+          fi
 
-      - name: 7. 恢复你的配置（核心保护）
+          for file in .env .env.local; do
+            if [ -f "/tmp/my-config/$file" ]; then
+              cp "/tmp/my-config/$file" "$file"
+            fi
+          done
+
+      - name: 7. 恢复自己的 Workflow
         run: |
-          git checkout --ours config/ 2>/dev/null || true
-          git checkout --ours .env 2>/dev/null || true
-          git checkout --ours .env.local 2>/dev/null || true
+          if [ -d "/tmp/my-workflows/workflows" ]; then
+            rm -rf .github/workflows
+            mkdir -p .github
+            cp -a /tmp/my-workflows/workflows .github/
+          fi
 
-      - name: 8. 提交更改
+      - name: 8. 提交更新
         run: |
-          git add .
-          git commit -m "auto sync: update from TrendRadar template" || echo "No changes"
+          git add -A
 
-      - name: 9. 合并回 master
-        run: |
-          git checkout master
-          git merge auto-sync || true
+          if git diff --cached --quiet; then
+            echo "没有新的更新"
+            exit 0
+          fi
 
-      - name: 10. 推送到 GitHub
+          git commit -m "sync: update from TrendRadar upstream"
+
+      - name: 9. 推送
         run: |
           git push origin master
+
+      - name: 10. 显示同步结果
+        run: |
+          echo "================================"
+          echo "TrendRadar 同步完成"
+          echo "当前提交："
+          git log -1 --oneline
+          echo "================================"
