@@ -142,32 +142,34 @@ After communication, the author indicated no concerns about server pressure, but
 
 ## 🪄 Sponsors
 
-<div align="center">
-
-> **Sponsorship Open**
+> **[Swiftproxy](https://www.swiftproxy.net/?ref=sansan0)** provides high-quality rotating and static residential proxies, with **90 million+ residential IPs** across **220+ locations worldwide**. It supports **HTTP(S) and SOCKS5**, flexible IP rotation, and sticky sessions, offering reliable network access for trend tracking, web scraping, and automated data collection.
 >
-> [Interested in sponsoring? View sponsorship and partnership details](https://trendradar.sandev.cc/en/sponsors/)
+> Use code **`PROXY90`** to get **10% off**.
 
-</div>
+<!-- Sponsor banner: 1400 × 300 px (14:3), displayed at 100% width; references: 302.AI at 992 × 250 px and Volcengine at 1400 × 400 px. The new banner retains the 1400 px width with a reduced height. -->
+<a href="https://www.swiftproxy.net/?ref=sansan0"><img src="_image/banner-swiftproxy.webp" alt="Swiftproxy global residential proxies" width="100%"></a>
+
+[Interested in sponsoring? View sponsorship and partnership details](https://trendradar.sandev.cc/en/sponsors/)
 
 <br>
 
 <a name="-support-project"></a>
 
-### ❤️ Find it useful? Support TrendRadar
+### 🧩 Another tool by the author: SanFrame
 
-> If TrendRadar has captured value for you, give it some fuel to keep evolving
->
-> Any amount is welcome; even 1 RMB is a gesture of encouragement for open source. Feel free to leave a note with your donation (´▽`ʃ♡ƪ)
-
-<div align="center">
-
-| WeChat Pay | Alipay |
-| --- | --- |
-| <img src="https://cdn-1258574687.cos.ap-shanghai.myqcloud.com/img/%2F2025%2F07%2F17%2F2ae0a88d98079f7e876c2b4dc85233c6-9e8025.JPG" width="240" alt="WeChat Pay"> | <img src="https://cdn-1258574687.cos.ap-shanghai.myqcloud.com/img/%2F2025%2F07%2F17%2F1ed4f20ab8e35be51f8e84c94e6e239b4-fe4947.JPG" width="240" alt="Alipay"> |
-
-</div>
-
+<table role="presentation">
+<tr>
+<td width="96" align="center">
+<a href="https://ocr.sandev.cc/en/"><img src="_image/sanframe-icon.webp" alt="SanFrame" width="72" height="72"></a>
+</td>
+<td align="left">
+<strong>Multi-device content and clipboard management</strong><br>
+Manage text, images, and files in one place with search, tags, favorites, archiving, and lightweight clipboard management. Transfer and sync content as needed across Windows and macOS devices over your local network, making it easier to organize and reuse. Includes offline OCR, with support for specialist recognition models such as GLM-OCR and HunyuanOCR, plus screenshot annotation and PDF processing. No account required. Local-first.
+<br><br>
+<a href="https://ocr.sandev.cc/en/"><strong>Explore SanFrame →</strong></a>
+</td>
+</tr>
+</table>
 
 ### 🤝 Attribution & Secondary Development
 

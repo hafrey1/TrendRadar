@@ -190,32 +190,34 @@
 
 ## 🪄 赞助商
 
-<div align="center">
-
-> **虚位以待**
+> **[Swiftproxy](https://www.swiftproxy.net/?ref=sansan0)** 专注于提供高质量动态和静态住宅代理，拥有 **9000 万+住宅 IP**，覆盖全球 **220+ 个地区**，支持 **HTTP(S)、SOCKS5** 协议及灵活的 IP 轮换与粘性会话。适用于热点追踪、网页抓取与自动化数据采集，为你提供更稳定可靠的网络访问支持。
 >
-> [有意赞助？点击查看赞助与合作详情](https://trendradar.sandev.cc/zh/sponsors/)
+> 使用优惠码 **`PROXY90`**，即可享受 **九折优惠**。
 
-</div>
+<!-- 赞助商横幅尺寸：1400 × 300 px（14:3），以 100% 宽度展示；参考 302.AI 的 992 × 250 px 与火山引擎的 1400 × 400 px，新版沿用 1400 px 宽度并缩短高度。 -->
+<a href="https://www.swiftproxy.net/?ref=sansan0"><img src="_image/banner-swiftproxy.webp" alt="Swiftproxy 全球住宅代理" width="100%"></a>
+
+[有意赞助？点击查看赞助与合作详情](https://trendradar.sandev.cc/zh/sponsors/)
 
 <br>
 
 <a name="-支持项目"></a>
 
-### ❤️ 觉得好用？支持一下
+### 🧩 作者的另一款工具：SanFrame
 
-> 若 TrendRadar 曾为你捕捉价值，不妨为它注入动力，助其持续进化
->
-> 金额随意，1 元也是对开源的鼓励。欢迎在赞赏时备注留言 (´▽`ʃ♡ƪ)
-
-<div align="center">
-
-| 微信赞赏 | 支付宝赞赏 |
-|:---:|:---:|
-| <img src="https://cdn-1258574687.cos.ap-shanghai.myqcloud.com/img/%2F2025%2F07%2F17%2F2ae0a88d98079f7e876c2b4dc85233c6-9e8025.JPG" width="240" alt="微信赞赏"> | <img src="https://cdn-1258574687.cos.ap-shanghai.myqcloud.com/img/%2F2025%2F07%2F17%2F1ed4f20ab8e35be51f8e84c94e6e239b4-fe4947.JPG" width="240" alt="支付宝赞赏"> |
-
-</div>
-
+<table role="presentation">
+<tr>
+<td width="96" align="center">
+<a href="https://ocr.sandev.cc/zh/"><img src="_image/sanframe-icon.webp" alt="SanFrame" width="72" height="72"></a>
+</td>
+<td align="left">
+<strong>多设备资料与剪贴板管理</strong><br>
+集中管理文字、图片与文件，支持搜索、标签、收藏、归档和轻量剪贴板管理。Windows / macOS 多设备之间可通过局域网互传与按需同步，方便资料整理和复用。内置离线 OCR，也可接入 GLM-OCR、HunyuanOCR 等专业识别大模型，并提供截图标注、PDF 处理等功能。无需账号，本地优先。
+<br><br>
+<a href="https://ocr.sandev.cc/zh/"><strong>了解 SanFrame →</strong></a>
+</td>
+</tr>
+</table>
 
 ### 🤝 二次开发与引用
 
