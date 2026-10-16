@@ -63,7 +63,7 @@ Deploy in <strong>30 seconds</strong> — Say goodbye to endless scrolling, only
 |:---:|:---:|:---:|
 | [🚀 **Quick Start**](#-quick-start) | [AI Analysis](#-ai-analysis) | [⚙️ **Configuration Guide**](#configuration-guide) |
 | [Docker Deployment](#6-docker-deployment) / [Local Deploy](#local-deploy) | [MCP Clients](#-mcp-clients) | [📝 **Changelog**](#-changelog) |
-| [🎯 **Core Features**](#-core-features) | [☕ **Support Project**](#-support-project) | [📚 **Related Projects**](#-related-projects) |
+| [🎯 **Core Features**](#-core-features) | [💬 **Community**](#community) | [📚 **Related Projects**](#-related-projects) |
 
 </div>
 
@@ -142,7 +142,15 @@ After communication, the author indicated no concerns about server pressure, but
 
 ## 🪄 Sponsors
 
-> **[Swiftproxy](https://www.swiftproxy.net/?ref=sansan0)** provides high-quality rotating and static residential proxies, with **90 million+ residential IPs** across **220+ locations worldwide**. It supports **HTTP(S) and SOCKS5**, flexible IP rotation, and sticky sessions, offering reliable network access for trend tracking, web scraping, and automated data collection.
+> **[RapidProxy](https://www.rapidproxy.io/?ref=TrendRadar)** provides a global residential proxy network for multi-platform data collection, AI analysis, and automated monitoring. Smart rotation and sticky sessions support access across regions and continuous data gathering. Rotating residential proxies start at **\$0.55/GB**, and static residential proxies start at **\$5/IP/month**.
+>
+> Use code **`RAPID10`** for **10% off**. [Start a free trial](https://www.rapidproxy.io/?ref=TrendRadar).
+
+<a href="https://www.rapidproxy.io/?ref=TrendRadar"><img src="_image/banner-rapidproxy.webp" alt="RapidProxy high-quality overseas proxy IP services with 90M+ real residential IPs, non-expiring traffic, HTTP(S)/SOCKS5, smart IP rotation, and free testing" width="100%"></a>
+
+<br>
+
+> **[Swiftproxy](https://www.swiftproxy.net/?ref=sansan0)** provides high-quality rotating and static residential proxies with flexible IP rotation and sticky sessions, offering reliable network access for projects involving trend tracking, web scraping, and automated data collection.
 >
 > Use code **`PROXY90`** to get **10% off**.
 
@@ -150,6 +158,34 @@ After communication, the author indicated no concerns about server pressure, but
 <a href="https://www.swiftproxy.net/?ref=sansan0"><img src="_image/banner-swiftproxy.webp" alt="Swiftproxy global residential proxies" width="100%"></a>
 
 [Interested in sponsoring? View sponsorship and partnership details](https://trendradar.sandev.cc/en/sponsors/)
+
+<br>
+
+### 🤝 Attribution & Secondary Development
+
+If you utilize the core code or draw inspiration from the logic of this project, **it would be greatly appreciated** if you could acknowledge the source in your README or documentation and include a link to this repository.
+
+This contributes to the sustainable maintenance of the project and the growth of the community. Thank you for your respect and support! ❤️
+
+
+<a name="community"></a>
+
+### 💬 Community
+
+* **GitHub Issues**: Best for specific technical issues. Please provide complete information (screenshots, error logs, etc.) to help locate the problem quickly.
+* **WeChat Official Account**: It is recommended to leave comments under relevant articles. If you need to ask questions in the background, **liking/recommending** the article first is the best "icebreaker," and I can feel your appreciation (´▽`ʃ♡ƪ).
+* **QQ Group**: Whether you're an AI beginner or a seasoned developer, looking for help or sharing ideas, you're welcome here. The group is all about mutual help and brainstorming — please read the group announcement first; describe your issue clearly with screenshots, and fellow members will help when available. Community wisdom is often faster and more comprehensive than any single person 🤝
+
+> **Friendly Reminder**:
+> This project is for open-source sharing, not a commercial product. Treat the author as a friend, not customer service, for better communication efficiency!
+
+<div align="center">
+
+| Follow on WeChat | QQ Group |
+| :---: | :---: |
+| <img src="_image/weixin.png" width="500" title="Silicon-based Tea Room"/> | <img src="_image/qq-group.png" alt="TrendRadar QQ group QR code, group number 1007671021" width="150"/> |
+
+</div>
 
 <br>
 
@@ -164,42 +200,12 @@ After communication, the author indicated no concerns about server pressure, but
 </td>
 <td align="left">
 <strong>Multi-device content and clipboard management</strong><br>
-Manage text, images, and files in one place with search, tags, favorites, archiving, and lightweight clipboard management. Transfer and sync content as needed across Windows and macOS devices over your local network, making it easier to organize and reuse. Includes offline OCR, with support for specialist recognition models such as GLM-OCR and HunyuanOCR, plus screenshot annotation and PDF processing. No account required. Local-first.
+Organize text, images, files, and clipboard content, and transfer them over your local network between Windows, macOS, and the Android companion app. The desktop app offers on-demand sync, offline OCR, screenshot annotation, and PDF tools; no account required, local-first.
 <br><br>
 <a href="https://ocr.sandev.cc/en/"><strong>Explore SanFrame →</strong></a>
 </td>
 </tr>
 </table>
-
-### 🤝 Attribution & Secondary Development
-
-If you utilize the core code or draw inspiration from the logic of this project, **it would be greatly appreciated** if you could acknowledge the source in your README or documentation and include a link to this repository.
-
-This contributes to the sustainable maintenance of the project and the growth of the community. Thank you for your respect and support! ❤️
-
-
-### 💬 Feedback & Community
-
-* **GitHub Issues**: Best for specific technical issues. Please provide complete information (screenshots, error logs, etc.) to help locate the problem quickly.
-* **WeChat Official Account**: It is recommended to leave comments under relevant articles. If you need to ask questions in the background, **liking/recommending** the article first is the best "icebreaker," and I can feel your appreciation (´▽`ʃ♡ƪ).
-* **QQ Group**: Scan the QR code below or search for group **1007671021** in QQ to join. Whether you're an AI beginner or a seasoned developer, looking for help or sharing ideas, you're welcome here. The group is all about mutual help and brainstorming — please read the group announcement first; describe your issue clearly with screenshots, and fellow members will help when available. Community wisdom is often faster and more comprehensive than any single person 🤝
-
-<div align="center">
-
-<img src="_image/qq-group.png" alt="TrendRadar QQ group QR code, group number 1007671021" width="320">
-
-</div>
-
-> **Friendly Reminder**:
-> This project is for open-source sharing, not a commercial product. Treat the author as a friend, not customer service, for better communication efficiency!
-
-<div align="center">
-
-| Follow on WeChat |
-| --- |
-| <img src="_image/weixin.png" width="500" title="Silicon-based Tea Room"/> |
-
-</div>
 
 <br>
 
