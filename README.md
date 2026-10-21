@@ -198,6 +198,12 @@
 
 <br>
 
+> **[ApiSmart](https://www.apismart.ai/)** 提供统一的 AI 模型 API，支持智能路由、故障切换与按量计费。通过兼容接口接入多种模型，适用于热点分析、内容生成与自动化工作流，让 AI 应用集成更省心。
+
+<a href="https://www.apismart.ai/"><img src="_image/banner-apismart.webp" alt="ApiSmart 一站式 AI 模型 API，支持文本、图像与视频，智能路由、按量计费" width="100%"></a>
+
+<br>
+
 > **[Swiftproxy](https://www.swiftproxy.net/?ref=sansan0)** 专注于提供高质量动态与静态住宅代理，支持灵活的 IP 轮换与粘性会话。适用于热点追踪、网页抓取与自动化数据采集，为你的项目提供更稳定可靠的网络访问支持。
 >
 > 使用优惠码 **`PROXY90`**，即可享受 **九折优惠**。

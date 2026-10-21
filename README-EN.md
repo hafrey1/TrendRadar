@@ -150,6 +150,12 @@ After communication, the author indicated no concerns about server pressure, but
 
 <br>
 
+> **[ApiSmart](https://www.apismart.ai/)** provides a unified AI model API with intelligent routing, automatic failover, and pay-as-you-go billing. Access multiple models through compatible interfaces for trend analysis, content generation, and automated workflows, simplifying AI integration.
+
+<a href="https://www.apismart.ai/"><img src="_image/banner-apismart.webp" alt="ApiSmart unified AI model API for text, images, and video, with intelligent routing and pay-as-you-go billing" width="100%"></a>
+
+<br>
+
 > **[Swiftproxy](https://www.swiftproxy.net/?ref=sansan0)** provides high-quality rotating and static residential proxies with flexible IP rotation and sticky sessions, offering reliable network access for projects involving trend tracking, web scraping, and automated data collection.
 >
 > Use code **`PROXY90`** to get **10% off**.
